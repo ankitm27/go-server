@@ -2,7 +2,7 @@ package redis
 
 import (
 	"fmt"
-	"go-server/database"
+	database "go-server/database"
 	"reflect"
 	"time"
 
@@ -82,6 +82,7 @@ func AddDataIntoRedis(data string) {
 	// getRedisData("check1")
 	// database.InsertIntoDb()
 	createRedisQueue("check", data)
+	getRedisData("check")
 	// database.GetDataFromCollection()
 }
 
@@ -94,11 +95,14 @@ func AddDataIntoRedis(data string) {
 // }
 
 func createEntries(entries []string) bool {
+
 	// TODO: Create entries
 	// fmt.Println("Entries created for:-")
 	// fmt.Println(entries)
-	database.InsertIntoDb()
-	return true
+	fmt.Println([]map[string]interface{}(entries))
+	fmt.Println(reflect.TypeOf(map[string][interface](entries[0])))
+	database.InsertIntoDb(entries)
+	return false
 }
 
 func Schedule(interval time.Duration) *time.Ticker {
