@@ -27,16 +27,15 @@ func RedisClient(host string) *redis.Client {
 func createRedisQuene(key string, value string) {
 	client1 := RedisClient("localhost")
 	// fmt.Println("client", client)
-	err := client1.Set(key, value, 0).Err()
+	err := client1.LPush(key, value).Err()
 	if err != nil {
 		fmt.Println("error in setting the values", err)
 	}
-	fmt.Println("check")
 }
 
 func getRedisData(key string) {
 	client1 := RedisClient("localhost")
-	val, err := client1.Get(key).Result()
+	val, err := client1.LPop(key).Result()
 	if err != nil {
 		fmt.Println("error in getting the data", err)
 	}
@@ -44,8 +43,18 @@ func getRedisData(key string) {
 
 }
 
+func getKeyLength(key string) {
+	client1 := RedisClient("localhost")
+	val, err := client1.LLen(key).Result()
+	if err != nil {
+		fmt.Println("error in getting the data", err)
+	}
+	fmt.Println("val", val)
+}
+
 func AddDataIntoRedis(data string) {
 	// fmt.Println(client, "check", string(data))
 	createRedisQuene("check", string(data))
-	getRedisData("check")
+	getKeyLength("check")
+	// getRedisData("check")
 }
