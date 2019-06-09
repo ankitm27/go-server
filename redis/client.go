@@ -28,7 +28,6 @@ func RedisClient(host string) *redis.Client {
 
 func createRedisQueue(key string, value string) {
 	client1 := RedisClient("localhost")
-	// fmt.Println("client", client)
 	err := client1.RPush(key, value).Err()
 	if err != nil {
 		fmt.Println("error in setting the values", err)
@@ -36,7 +35,6 @@ func createRedisQueue(key string, value string) {
 }
 
 func getRedisData(key string) {
-	// client1 := RedisClient("localhost")
 	var count int64 = 2
 	if getKeyLength(key) >= int(count) {
 		data := getNElement(key, count)
@@ -78,31 +76,23 @@ func removeNElement(key string, n int64) {
 }
 
 func AddDataIntoRedis(data string) {
-	// getKeyLength("check1")
-	// getRedisData("check1")
-	// database.InsertIntoDb()
 	createRedisQueue("check", data)
-	getRedisData("check")
+	// getRedisData("check")
 	// database.GetDataFromCollection()
 }
 
-// func redisGetter() {
-// length := getKeyLength("check1")
-// 	if length >= 50 {
-// 		getRedisData("check1")
-// 		database.InsertIntoDb()
-// 	}
-// }
-
 func createEntries(entries []string) bool {
-
-	// TODO: Create entries
-	// fmt.Println("Entries created for:-")
-	// fmt.Println(entries)
-	fmt.Println([]map[string]interface{}(entries))
-	fmt.Println(reflect.TypeOf(map[string][interface](entries[0])))
-	database.InsertIntoDb(entries)
+	fmt.Println(entries)
+	database.InsertIntoDb(convertToSliceObject(entries))
 	return false
+}
+
+func convertToSliceObject(data []string) []interface{} {
+	slices := make([]interface{}, len(data))
+	for i := 0; i < len(data); i++ {
+		slices[i] = interface{}(data[i])
+	}
+	return slices
 }
 
 func Schedule(interval time.Duration) *time.Ticker {
