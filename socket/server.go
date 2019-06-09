@@ -10,15 +10,8 @@ import (
 	"strings"
 )
 
-// const (
-// 	Message       = "Pong"
-// 	StopCharacter = "\r\n\r\n"
-// )
-
 func CreateServer(port int) {
 	listen, err := net.Listen("tcp4", ":"+strconv.Itoa(port))
-
-	// defer listen.Close()
 
 	if err != nil {
 		log.Fatalf("Socket listen port %d failed,%s", port, err)
@@ -36,8 +29,6 @@ func CreateServer(port int) {
 }
 
 func handleRequest(conn net.Conn) {
-
-	// defer conn.Close()
 
 	var (
 		buf = make([]byte, 1024)
@@ -63,10 +54,6 @@ ILOOP:
 			return
 		}
 	}
-	// w.Write([]byte(Message))
-	// w.Flush()
-	// log.Printf("Send: %s", Message)
-
 }
 
 func isTransportOver(data string) (over bool) {

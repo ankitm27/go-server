@@ -2,6 +2,7 @@ package redis
 
 import (
 	"fmt"
+	"go-server/database"
 	"reflect"
 
 	"github.com/go-redis/redis"
@@ -26,7 +27,6 @@ func RedisClient(host string) *redis.Client {
 
 func createRedisQuene(key string, value string) {
 	client1 := RedisClient("localhost")
-	// fmt.Println("client", client)
 	err := client1.LPush(key, value).Err()
 	if err != nil {
 		fmt.Println("error in setting the values", err)
@@ -40,21 +40,30 @@ func getRedisData(key string) {
 		fmt.Println("error in getting the data", err)
 	}
 	fmt.Println("val", val)
-
 }
 
-func getKeyLength(key string) {
+func getKeyLength(key string) int64 {
 	client1 := RedisClient("localhost")
 	val, err := client1.LLen(key).Result()
 	if err != nil {
 		fmt.Println("error in getting the data", err)
 	}
-	fmt.Println("val", val)
+	// fmt.Println("val", val)
+	return val
 }
 
 func AddDataIntoRedis(data string) {
-	// fmt.Println(client, "check", string(data))
-	createRedisQuene("check", string(data))
-	getKeyLength("check")
-	// getRedisData("check")
+	createRedisQuene("check1", string(data))
+	// getKeyLength("check1")
+	// getRedisData("check1")
+	database.InsertIntoDb()
+	database.GetDataFromCollection()
+}
+
+func redisGetter() {
+	length := getKeyLength("check1")
+	if length >= 50 {
+		getRedisData("check1")
+		database.InsertIntoDb()
+	}
 }
