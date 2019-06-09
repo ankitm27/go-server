@@ -9,6 +9,6 @@ import (
 func main() {
 	redisclient.RedisClient("localhost")
 	database.DatabaseConnect()
+	// redisclient.Scheduler(1*time.Second)
 	socketserver.CreateServer(3333)
-    // redisclient.Scheduler(1*time.Second)
 }

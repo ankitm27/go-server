@@ -44,9 +44,11 @@ ILOOP:
 			break ILOOP
 		case nil:
 			log.Println("Receive:", data)
-			redis.AddDataIntoRedis(data)
+			// redis.AddDataIntoRedis(data)
 			if isTransportOver(data) {
 				break ILOOP
+			}else{
+				redis.AddDataIntoRedis(data)
 			}
 
 		default:
