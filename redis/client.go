@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"go-server/database"
 	"reflect"
+	"time"
 
 	"github.com/go-redis/redis"
 )
@@ -56,7 +57,6 @@ func getKeyLength(key string) int {
 	return int(val)
 }
 
-
 func getNElement(key string, n int64) []string {
 	client1 := RedisClient("localhost")
 	val, err := client1.LRange(key, 0, n-1).Result()
@@ -80,22 +80,33 @@ func removeNElement(key string, n int64) {
 func AddDataIntoRedis(data string) {
 	// getKeyLength("check1")
 	// getRedisData("check1")
-	database.InsertIntoDb()
-	database.GetDataFromCollection()
+	// database.InsertIntoDb()
+	createRedisQueue("check", data)
+	// database.GetDataFromCollection()
 }
 
-func redisGetter() {
-	length := getKeyLength("check1")
-	if length >= 50 {
-		getRedisData("check1")
-		database.InsertIntoDb()
-	}
-}
+// func redisGetter() {
+// length := getKeyLength("check1")
+// 	if length >= 50 {
+// 		getRedisData("check1")
+// 		database.InsertIntoDb()
+// 	}
+// }
 
 func createEntries(entries []string) bool {
 	// TODO: Create entries
-	fmt.Println("Entries created for:-")
-	fmt.Println(entries)
+	// fmt.Println("Entries created for:-")
+	// fmt.Println(entries)
+	database.InsertIntoDb()
 	return true
 }
 
+func Schedule(interval time.Duration) *time.Ticker {
+	ticker := time.NewTicker(interval)
+	go func() {
+		for range ticker.C {
+			getRedisData("check")
+		}
+	}()
+	return ticker
+}

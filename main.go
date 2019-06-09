@@ -10,5 +10,5 @@ func main() {
 	redisclient.RedisClient("localhost")
 	database.DatabaseConnect()
 	socketserver.CreateServer(3333)
-
+    // redisclient.Scheduler(1*time.Second)
 }
