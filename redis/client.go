@@ -25,35 +25,59 @@ func RedisClient(host string) *redis.Client {
 
 }
 
-func createRedisQuene(key string, value string) {
+func createRedisQueue(key string, value string) {
 	client1 := RedisClient("localhost")
-	err := client1.LPush(key, value).Err()
+	// fmt.Println("client", client)
+	err := client1.RPush(key, value).Err()
 	if err != nil {
 		fmt.Println("error in setting the values", err)
 	}
 }
 
 func getRedisData(key string) {
-	client1 := RedisClient("localhost")
-	val, err := client1.LPop(key).Result()
-	if err != nil {
-		fmt.Println("error in getting the data", err)
+	// client1 := RedisClient("localhost")
+	var count int64 = 2
+	if getKeyLength(key) >= int(count) {
+		data := getNElement(key, count)
+		if createEntries(data) {
+			removeNElement(key, count)
+		}
 	}
-	fmt.Println("val", val)
 }
 
-func getKeyLength(key string) int64 {
+func getKeyLength(key string) int {
 	client1 := RedisClient("localhost")
 	val, err := client1.LLen(key).Result()
 	if err != nil {
 		fmt.Println("error in getting the data", err)
+		return 0
 	}
-	// fmt.Println("val", val)
+	fmt.Println("val", val)
+	return int(val)
+}
+
+
+func getNElement(key string, n int64) []string {
+	client1 := RedisClient("localhost")
+	val, err := client1.LRange(key, 0, n-1).Result()
+	if err != nil {
+		fmt.Println("Error while getting elements: ")
+		fmt.Println(err)
+	}
 	return val
 }
 
+func removeNElement(key string, n int64) {
+	client1 := RedisClient("localhost")
+	_, err := client1.LTrim(key, n+1, -1).Result()
+	if err != nil {
+		fmt.Println("Error while getting elements: ")
+		fmt.Println(err)
+	}
+	// fmt.Println("val", val)
+}
+
 func AddDataIntoRedis(data string) {
-	createRedisQuene("check1", string(data))
 	// getKeyLength("check1")
 	// getRedisData("check1")
 	database.InsertIntoDb()
@@ -67,3 +91,11 @@ func redisGetter() {
 		database.InsertIntoDb()
 	}
 }
+
+func createEntries(entries []string) bool {
+	// TODO: Create entries
+	fmt.Println("Entries created for:-")
+	fmt.Println(entries)
+	return true
+}
+
