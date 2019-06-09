@@ -2,20 +2,27 @@ package redis
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/go-redis/redis"
 )
 
-func RedisClient(host string) {
-	client := redis.NewClient(&redis.Options{
-		Addr:     host + ":6379",
-		Password: "",
-		DB:       0,
-	})
+var client *redis.Client
+var isConnectionAvailable = false
 
-	pong, err := client.Ping().Result()
-	if err != nil {
-		fmt.Println("err", err)
+func RedisClient(host string) *redis.Client {
+	if !isConnectionAvailable {
+		client := redis.NewClient(&redis.Options{
+			Addr:     host + ":6379",
+			Password: "",
+			DB:       0,
+		})
+		fmt.Println(reflect.TypeOf(client))
+		isConnectionAvailable = true
 	}
-	fmt.Println("pong", pong)
+	return client
+}
+
+func AddDataIntoRedis(data string) {
+	fmt.Println(data)
 }

@@ -2,29 +2,27 @@ package socket
 
 import (
 	"bufio"
+	redis "go-server/redis"
 	"io"
 	"log"
 	"net"
-	"os"
 	"strconv"
 	"strings"
 )
 
-const (
-	Message       = "Pong"
-	StopCharacter = "\r\n\r\n"
-)
+// const (
+// 	Message       = "Pong"
+// 	StopCharacter = "\r\n\r\n"
+// )
 
 func CreateServer(port int) {
 	listen, err := net.Listen("tcp4", ":"+strconv.Itoa(port))
 
-	defer listen.Close()
+	// defer listen.Close()
 
 	if err != nil {
 		log.Fatalf("Socket listen port %d failed,%s", port, err)
-		os.Exit(1)
 	}
-	log.Printf("Begin listen port: %d", port)
 
 	for {
 		conn, err := listen.Accept()
@@ -39,12 +37,12 @@ func CreateServer(port int) {
 
 func handleRequest(conn net.Conn) {
 
-	defer conn.Close()
+	// defer conn.Close()
 
 	var (
 		buf = make([]byte, 1024)
 		r   = bufio.NewReader(conn)
-		w   = bufio.NewWriter(conn)
+		// w   = bufio.NewWriter(conn)
 	)
 ILOOP:
 	for {
@@ -55,6 +53,7 @@ ILOOP:
 			break ILOOP
 		case nil:
 			log.Println("Receive:", data)
+			redis.AddDataIntoRedis(data)
 			if isTransportOver(data) {
 				break ILOOP
 			}
@@ -64,9 +63,9 @@ ILOOP:
 			return
 		}
 	}
-	w.Write([]byte(Message))
-	w.Flush()
-	log.Printf("Send: %s", Message)
+	// w.Write([]byte(Message))
+	// w.Flush()
+	// log.Printf("Send: %s", Message)
 
 }
 
