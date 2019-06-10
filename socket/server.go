@@ -2,6 +2,7 @@ package socket
 
 import (
 	"bufio"
+	"fmt"
 	redis "go-server/redis"
 	"io"
 	"log"
@@ -45,12 +46,16 @@ ILOOP:
 		case nil:
 			log.Println("Receive:", data)
 			// redis.AddDataIntoRedis(data)
-			if isTransportOver(data) {
-				break ILOOP
-			}else{
-				redis.AddDataIntoRedis(data)
+			isEOF := isTransportOver(data)
+			fmt.Println("is Eof", isEOF)
+			if isEOF {
+				data = strings.Replace(data, "\r\n\r\n", "", 1)
 			}
-
+			fmt.Println("data", data)
+			redis.AddDataIntoRedis(data)
+            if isEOF{
+				break ILOOP
+			}
 		default:
 			log.Fatalf("Receive data failed:%s", err)
 			return

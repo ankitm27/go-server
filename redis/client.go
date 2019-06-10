@@ -2,8 +2,9 @@ package redis
 
 import (
 	"fmt"
-	database "go-server/database"
+	"go-server/database"
 	"reflect"
+	"strings"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -41,6 +42,7 @@ func getRedisData(key string) {
 		if createEntries(data) {
 			removeNElement(key, count)
 		}
+		// fmt.Println("data", data)
 	}
 }
 
@@ -76,21 +78,33 @@ func removeNElement(key string, n int64) {
 }
 
 func AddDataIntoRedis(data string) {
-	createRedisQueue("check", data)
-	// getRedisData("check")
+	fmt.Println("data", data)
+	// createRedisQueue("check", data)
+	getRedisData("check1")
 	// database.GetDataFromCollection()
 }
 
 func createEntries(entries []string) bool {
-	fmt.Println(entries)
-	database.InsertIntoDb(convertToSliceObject(entries))
+	fmt.Println("entries", entries)
+	dataSlice := convertToSliceObject(entries)
+	fmt.Println("data slice", dataSlice)
+	database.InsertIntoDb(dataSlice)
 	return false
 }
 
 func convertToSliceObject(data []string) []interface{} {
 	slices := make([]interface{}, len(data))
+	j := 0
 	for i := 0; i < len(data); i++ {
-		slices[i] = interface{}(data[i])
+		// fmt.Println("data i", data[i])
+		if isTransportOver(data[i]) {
+			// slices[j] = interface{}(data[i])
+			// j++
+			data[i] = strings.Replace(data[i], "\r\n\r\n", "", 1)
+		}
+		// fmt.Println("data", data[i])
+		slices[j] = interface{}(data[i])
+		j++
 	}
 	return slices
 }
@@ -103,4 +117,9 @@ func Schedule(interval time.Duration) *time.Ticker {
 		}
 	}()
 	return ticker
+}
+
+func isTransportOver(data string) (over bool) {
+	over = strings.HasSuffix(data, "\r\n\r\n")
+	return over
 }

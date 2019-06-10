@@ -32,6 +32,8 @@ func InsertIntoDb(data []interface{}) []interface{} {
 	client1 := DatabaseConnect()
 	collection := client1.Database("testing").Collection("numbers")
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	fmt.Println("data", data)
+	fmt.Println("reflect", reflect.TypeOf(data))
 	results, err := collection.InsertMany(ctx, data)
 
 	if err != nil {
@@ -39,6 +41,7 @@ func InsertIntoDb(data []interface{}) []interface{} {
 		return nil
 	}
 	return results.InsertedIDs
+	// return results
 }
 
 func GetDataFromCollection() {
