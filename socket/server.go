@@ -12,6 +12,7 @@ import (
 )
 
 func CreateServer(port int) {
+	fmt.Println("check")
 	listen, err := net.Listen("tcp4", ":"+strconv.Itoa(port))
 
 	if err != nil {
@@ -53,7 +54,7 @@ ILOOP:
 			}
 			fmt.Println("data", data)
 			redis.AddDataIntoRedis(data)
-            if isEOF{
+			if isEOF {
 				break ILOOP
 			}
 		default:

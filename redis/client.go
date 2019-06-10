@@ -113,7 +113,7 @@ func Schedule(interval time.Duration) *time.Ticker {
 	ticker := time.NewTicker(interval)
 	go func() {
 		for range ticker.C {
-			getRedisData("check")
+			getRedisData("check1")
 		}
 	}()
 	return ticker
