@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"encoding/json"
 	"fmt"
 	"go-server/database"
 	"reflect"
@@ -29,9 +30,11 @@ func RedisClient(host string) *redis.Client {
 
 func createRedisQueue(key string, value string) {
 	client1 := RedisClient("localhost")
-	err := client1.RPush(key, value).Err()
-	if err != nil {
-		fmt.Println("error in setting the values", err)
+	if value != "" {
+		err := client1.RPush(key, value).Err()
+		if err != nil {
+			fmt.Println("error in setting the values", err)
+		}
 	}
 }
 
@@ -53,7 +56,6 @@ func getKeyLength(key string) int {
 		fmt.Println("error in getting the data", err)
 		return 0
 	}
-	fmt.Println("val", val)
 	return int(val)
 }
 
@@ -74,36 +76,32 @@ func removeNElement(key string, n int64) {
 		fmt.Println("Error while getting elements: ")
 		fmt.Println(err)
 	}
-	// fmt.Println("val", val)
 }
 
 func AddDataIntoRedis(data string) {
-	fmt.Println("data", data)
-	// createRedisQueue("check", data)
-	getRedisData("check1")
+	createRedisQueue("check", data)
+	// getRedisData("check")
 	// database.GetDataFromCollection()
 }
 
 func createEntries(entries []string) bool {
-	fmt.Println("entries", entries)
 	dataSlice := convertToSliceObject(entries)
-	fmt.Println("data slice", dataSlice)
-	database.InsertIntoDb(dataSlice)
-	return false
+	return len(database.InsertIntoDb(dataSlice)) > 0
 }
 
 func convertToSliceObject(data []string) []interface{} {
 	slices := make([]interface{}, len(data))
 	j := 0
 	for i := 0; i < len(data); i++ {
-		// fmt.Println("data i", data[i])
 		if isTransportOver(data[i]) {
-			// slices[j] = interface{}(data[i])
-			// j++
 			data[i] = strings.Replace(data[i], "\r\n\r\n", "", 1)
 		}
-		// fmt.Println("data", data[i])
-		slices[j] = interface{}(data[i])
+		mapObject := make(map[string]interface{})
+		err := json.Unmarshal([]byte(data[i]), &mapObject)
+		if err != nil {
+			panic(err)
+		}
+		slices[j] = interface{}(mapObject)
 		j++
 	}
 	return slices

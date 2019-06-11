@@ -31,17 +31,18 @@ func DatabaseConnect() *mongo.Client {
 func InsertIntoDb(data []interface{}) []interface{} {
 	client1 := DatabaseConnect()
 	collection := client1.Database("testing").Collection("numbers")
-	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	fmt.Println("data", data)
-	fmt.Println("reflect", reflect.TypeOf(data))
+	ctx, _ := context.WithTimeout(context.Background(), 50*time.Second)
+
+	// datum = make(interface{}, map({"Name":"Eve","Age":6,"Parents":"Alice"})
+	// _, err := collection.InsertOne(ctx, bson.M{"Name": "Eve", "Age": 6, "Parents": "Alice"})
 	results, err := collection.InsertMany(ctx, data)
 
 	if err != nil {
 		fmt.Println("error in saving the data", err)
 		return nil
 	}
+	fmt.Println(results.InsertedIDs)
 	return results.InsertedIDs
-	// return results
 }
 
 func GetDataFromCollection() {
