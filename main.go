@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 )
 
 func signUp(w http.ResponseWriter, r *http.Request) {
@@ -39,10 +40,10 @@ func signUp(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(message))
 }
 
-func check(check http.Handler) http.Handler {
+func authenticateData(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Executing middlewareOne")
-		check.ServeHTTP(w, r)
+		next.ServeHTTP(w, r)
 		log.Println("Executing middlewareOne again")
 	})
 }
@@ -50,11 +51,11 @@ func check(check http.Handler) http.Handler {
 func main() {
 	redisclient.RedisClient("localhost")
 	database.DatabaseConnect()
-	// redisclient.Schedule(1 * time.Second)
+	redisclient.Schedule(1 * time.Second)
 	go socketserver.CreateServer(3333)
 	// fmt.Println("")
 	signUpFunctionCall := http.HandlerFunc(signUp)
-	http.Handle("/signup", check(signUpFunctionCall))
+	http.Handle("/signup", authenticateData(signUpFunctionCall))
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Println("error in http server", err)
