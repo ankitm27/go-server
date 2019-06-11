@@ -99,7 +99,8 @@ func convertToSliceObject(data []string) []interface{} {
 		mapObject := make(map[string]interface{})
 		err := json.Unmarshal([]byte(data[i]), &mapObject)
 		if err != nil {
-			panic(err)
+			// panic(err)
+			fmt.Println("error in conveting data into json", err)
 		}
 		slices[j] = interface{}(mapObject)
 		j++

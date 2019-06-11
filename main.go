@@ -10,6 +10,10 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/mux"
+
+	"github.com/fvbock/endless"
 )
 
 func signUp(w http.ResponseWriter, r *http.Request) {
@@ -55,10 +59,15 @@ func main() {
 	go socketserver.CreateServer(3333)
 	// fmt.Println("")
 	signUpFunctionCall := http.HandlerFunc(signUp)
-	http.Handle("/signup", authenticateData(signUpFunctionCall))
+	mux := mux.NewRouter()
+	mux.Handle("/signup", authenticateData(signUpFunctionCall))
 
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		fmt.Println("error in http server", err)
+	// if err := http.ListenAndServe(":8080", nil); err != nil {
+	// 	fmt.Println("error in http server", err)
+	// }
+	err := endless.ListenAndServe("localhost:8080", mux)
+	if err != nil {
+		fmt.Println("there are some error in starting the golang server", err)
 	}
 }
 
