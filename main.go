@@ -7,6 +7,7 @@ import (
 	redisclient "go-server/redis"
 	socketserver "go-server/socket"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -38,13 +39,23 @@ func signUp(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(message))
 }
 
+func check(check http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		log.Println("Executing middlewareOne")
+		check.ServeHTTP(w, r)
+		log.Println("Executing middlewareOne again")
+	})
+}
+
 func main() {
 	redisclient.RedisClient("localhost")
 	database.DatabaseConnect()
 	// redisclient.Schedule(1 * time.Second)
 	go socketserver.CreateServer(3333)
 	// fmt.Println("")
-	http.HandleFunc("/signup", signUp)
+	signUpFunctionCall := http.HandlerFunc(signUp)
+	http.Handle("/signup", check(signUpFunctionCall))
+
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		fmt.Println("error in http server", err)
 	}
