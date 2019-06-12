@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/url"
 	"reflect"
+	"regexp"
 	"time"
 
 	cryptography "go-server/cryptography"
@@ -18,12 +20,26 @@ var client *mongo.Client
 var databaseConnection = false
 
 type User struct {
-	ID string `bson:"_id" json:"_id,omitempty"`
-	// UID      string
-	Email    string `bson:"email" json:"email"`
-	Password string `bson:"password" json:"-"`
-	Key      string `bson:"key" json:"key"`
-	Secret   string `bson:"secret" json:"secret"`
+	ID       string `bson:"_id" json:"_id,omitempty"`
+	Email    string `bson:"email" json:"email,omitempty"`
+	Password string `bson:"password" json:"password,omitempty"`
+	Key      string `bson:"key" json:"key,omitempty"`
+	Secret   string `bson:"secret" json:"secret,omitempty"`
+}
+
+func (user User) Validate() (errs url.Values) {
+	regexpEmail := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
+	if user.Email == "" {
+		errs.Add("email", "This is required field")
+	}
+	regexpEmail.MatchString(user.Email)
+	if !regexpEmail.MatchString(user.Email) {
+		errs.Add("email", "The email field should be a valid email address!")
+	}
+	if user.Password == "" {
+		errs.Add("password", "This is required field")
+	}
+	return errs
 }
 
 func DatabaseConnect() *mongo.Client {
@@ -77,7 +93,11 @@ func GetUser(data map[string]string) *User {
 	client = DatabaseConnect()
 	collection := client.Database("testing").Collection("users")
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
-	err := collection.FindOne(ctx, interface{}(data)).Decode(result)
+	projection := map[string]int{
+		"_id":      0,
+		"password": 0,
+	}
+	err := collection.FindOne(ctx, interface{}(data), options.FindOne().SetProjection(interface{}(projection))).Decode(result)
 
 	if err != nil {
 		fmt.Println("Error", err)
@@ -87,6 +107,7 @@ func GetUser(data map[string]string) *User {
 
 func CreateUser(data map[string]string) (interface{}, error) {
 	client = DatabaseConnect()
+	fmt.Println(data)
 	key, keyerr := cryptography.Encrypt(data["email"])
 	if keyerr != nil {
 		panic(keyerr)
@@ -102,6 +123,8 @@ func CreateUser(data map[string]string) (interface{}, error) {
 		Key:      key,
 		Secret:   secret,
 	}
+	fmt.Println(userData.Validate())
+
 	collection := client.Database("testing").Collection("users")
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	result, err := collection.InsertOne(ctx, userData)
