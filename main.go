@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"crypto/sha1"
 	"encoding/json"
 	"fmt"
@@ -39,15 +38,11 @@ func signUp(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 		user := database.GetUser(map[string]string{"email": payload["email"]})
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(user)
-		message = reqBodyBytes.Bytes()
+		message, _ = json.Marshal(user)
 	} else if user.Password == payload["Password"] {
 		fmt.Println("Invalid password")
 	} else {
-		reqBodyBytes := new(bytes.Buffer)
-		json.NewEncoder(reqBodyBytes).Encode(user)
-		message = reqBodyBytes.Bytes()
+		message, _ = json.Marshal(user)
 	}
 	// uuidData, err := uuid.NewV4()
 	// if err != nil {
@@ -88,7 +83,7 @@ func main() {
 	// if err := http.ListenAndServe(":8080", nil); err != nil {
 	// 	fmt.Println("error in http server", err)
 	// }
-	err := endless.ListenAndServe("localhost:8080", mux)
+	err := endless.ListenAndServe("localhost:8001", mux)
 	if err != nil {
 		fmt.Println("there are some error in starting the golang server", err)
 	}

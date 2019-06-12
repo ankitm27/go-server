@@ -21,7 +21,7 @@ type User struct {
 	ID string `bson:"_id" json:"_id,omitempty"`
 	// UID      string
 	Email    string `bson:"email" json:"email"`
-	Password string `bson:"password" json:"password"`
+	Password string `bson:"password" json:"-"`
 	Key      string `bson:"key" json:"key"`
 	Secret   string `bson:"secret" json:"secret"`
 }
