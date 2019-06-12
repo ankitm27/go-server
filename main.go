@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"crypto/sha1"
+	"encoding/json"
 	"fmt"
 	database "go-server/database"
 	redisclient "go-server/redis"
@@ -24,8 +26,29 @@ func signUp(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("there is some error in sign up", err)
 	}
-	fmt.Println("data", string(data))
-	message := "check"
+	payload := make(map[string]string)
+	error := json.Unmarshal(data, &payload)
+	if error != nil {
+		panic(error)
+	}
+	var message []byte
+	user := database.GetUser(map[string]string{"email": payload["email"]})
+	if user.ID == "" {
+		_, err := database.CreateUser(payload)
+		if err != nil {
+			panic(err)
+		}
+		user := database.GetUser(map[string]string{"email": payload["email"]})
+		reqBodyBytes := new(bytes.Buffer)
+		json.NewEncoder(reqBodyBytes).Encode(user)
+		message = reqBodyBytes.Bytes()
+	} else if user.Password == payload["Password"] {
+		fmt.Println("Invalid password")
+	} else {
+		reqBodyBytes := new(bytes.Buffer)
+		json.NewEncoder(reqBodyBytes).Encode(user)
+		message = reqBodyBytes.Bytes()
+	}
 	// uuidData, err := uuid.NewV4()
 	// if err != nil {
 	// fmt.Println("error in creating uuid", err)
@@ -38,10 +61,10 @@ func signUp(w http.ResponseWriter, r *http.Request) {
 	// uuidStr := buf[:]
 	// uuisStr := uuid.String(uuidData)
 	h := sha1.New()
-	h.Write([]byte(message))
+	h.Write(message)
 	bs := h.Sum(nil)
 	fmt.Println("bs %x", string(bs))
-	w.Write([]byte(message))
+	w.Write(message)
 }
 
 func authenticateData(next http.Handler) http.Handler {

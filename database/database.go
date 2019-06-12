@@ -7,6 +7,8 @@ import (
 	"reflect"
 	"time"
 
+	cryptography "go-server/cryptography"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"gopkg.in/mgo.v2/bson"
@@ -14,6 +16,15 @@ import (
 
 var client *mongo.Client
 var databaseConnection = false
+
+type User struct {
+	ID string `bson:"_id" json:"_id,omitempty"`
+	// UID      string
+	Email    string `bson:"email" json:"email"`
+	Password string `bson:"password" json:"password"`
+	Key      string `bson:"key" json:"key"`
+	Secret   string `bson:"secret" json:"secret"`
+}
 
 func DatabaseConnect() *mongo.Client {
 	fmt.Println("check")
@@ -31,9 +42,9 @@ func DatabaseConnect() *mongo.Client {
 func InsertIntoDb(data []interface{}) []interface{} {
 	client1 := DatabaseConnect()
 	collection := client1.Database("testing").Collection("numbers")
-	ctx, _ := context.WithTimeout(context.Background(), 50*time.Second)
-
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	// datum = make(interface{}, map({"Name":"Eve","Age":6,"Parents":"Alice"})
+
 	// _, err := collection.InsertOne(ctx, bson.M{"Name": "Eve", "Age": 6, "Parents": "Alice"})
 	results, err := collection.InsertMany(ctx, data)
 
@@ -59,4 +70,43 @@ func GetDataFromCollection() {
 		log.Fatal(err)
 	}
 	fmt.Println("result", result)
+}
+
+func GetUser(data map[string]string) *User {
+	result := &User{}
+	client = DatabaseConnect()
+	collection := client.Database("testing").Collection("users")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	err := collection.FindOne(ctx, interface{}(data)).Decode(result)
+
+	if err != nil {
+		fmt.Println("Error", err)
+	}
+	return result
+}
+
+func CreateUser(data map[string]string) (interface{}, error) {
+	client = DatabaseConnect()
+	key, keyerr := cryptography.Encrypt(data["email"])
+	if keyerr != nil {
+		panic(keyerr)
+	}
+	secret, secreterr := cryptography.Encrypt(data["password"])
+	if secreterr != nil {
+		panic(secreterr)
+	}
+	userData := User{
+		ID:       bson.NewObjectId().Hex(),
+		Email:    data["email"],
+		Password: data["password"],
+		Key:      key,
+		Secret:   secret,
+	}
+	collection := client.Database("testing").Collection("users")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	result, err := collection.InsertOne(ctx, userData)
+	if err != nil {
+		return "", err
+	}
+	return result.InsertedID, nil
 }
