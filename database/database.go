@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"log"
 	"net/url"
-	"reflect"
 	"regexp"
 	"time"
 
 	cryptography "go-server/cryptography"
+
+	"go-server/Models"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -19,13 +20,15 @@ import (
 var client *mongo.Client
 var databaseConnection = false
 
-type User struct {
-	ID       string `bson:"_id" json:"_id,omitempty"`
-	Email    string `bson:"email" json:"email,omitempty"`
-	Password string `bson:"password" json:"password,omitempty"`
-	Key      string `bson:"key" json:"key,omitempty"`
-	Secret   string `bson:"secret" json:"secret,omitempty"`
-}
+// type User struct {
+// 	ID       string `bson:"_id" json:"_id,omitempty"`
+// 	Email    string `bson:"email" json:"email"`
+// 	Password string `bson:"password" json:"-"`
+// 	Key      string `bson:"key" json:"key"`
+// 	Secret   string `bson:"secret" json:"secret"`
+// }
+
+type User Models.User
 
 func (user User) Validate() (errs url.Values) {
 	regexpEmail := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
@@ -43,13 +46,13 @@ func (user User) Validate() (errs url.Values) {
 }
 
 func DatabaseConnect() *mongo.Client {
-	fmt.Println("check")
+	// fmt.Println("check")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb://localhost:27017"))
 	if err != nil {
 		fmt.Println("error in connecting with mongo", err)
 	}
-	fmt.Println(reflect.TypeOf(client))
+	// fmt.Println(reflect.TypeOf(client))
 	databaseConnection = true
 	// }
 	return client
@@ -68,7 +71,7 @@ func InsertIntoDb(data []interface{}) []interface{} {
 		fmt.Println("error in saving the data", err)
 		return nil
 	}
-	fmt.Println(results.InsertedIDs)
+	// fmt.Println(results.InsertedIDs)
 	return results.InsertedIDs
 }
 
@@ -100,21 +103,23 @@ func GetUser(data map[string]string) *User {
 	err := collection.FindOne(ctx, interface{}(data), options.FindOne().SetProjection(interface{}(projection))).Decode(result)
 
 	if err != nil {
-		fmt.Println("Error", err)
+		fmt.Println("Error 1212", err)
 	}
 	return result
 }
 
 func CreateUser(data map[string]string) (interface{}, error) {
 	client = DatabaseConnect()
-	fmt.Println(data)
+	// fmt.Println(data)
 	key, keyerr := cryptography.Encrypt(data["email"])
 	if keyerr != nil {
-		panic(keyerr)
+		// panic(keyerr)
+		fmt.Println("key err", keyerr)
 	}
 	secret, secreterr := cryptography.Encrypt(data["password"])
 	if secreterr != nil {
-		panic(secreterr)
+		// panic(secreterr)
+		fmt.Println("secret err", secreterr)
 	}
 	userData := User{
 		ID:       bson.NewObjectId().Hex(),
@@ -123,13 +128,14 @@ func CreateUser(data map[string]string) (interface{}, error) {
 		Key:      key,
 		Secret:   secret,
 	}
-	fmt.Println(userData.Validate())
-
+	// fmt.Println(userData.Validate())
+	userData.Validate()
 	collection := client.Database("testing").Collection("users")
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	result, err := collection.InsertOne(ctx, userData)
 	if err != nil {
 		return "", err
 	}
+	fmt.Println("result", result)
 	return result.InsertedID, nil
 }

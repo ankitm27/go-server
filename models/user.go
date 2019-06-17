@@ -1,4 +1,4 @@
-package models
+package Models
 
 type User struct {
 	ID       string `bson:"_id" json:"_id,omitempty"`
