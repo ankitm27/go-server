@@ -61,3 +61,14 @@ func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
 	// message := "check"
 	w.Write([]byte(message))
 }
+
+func GetData(w http.ResponseWriter, r *http.Request){
+	data := r.URL.Query()
+	fmt.Println("data",data)
+	typeData := data["type"][0]
+	typeDataResult := database.GetUserData(map[string]string{"datatype":typeData})
+	fmt.Println("type data result",typeDataResult)
+	// w.Write([]byte(typeDataResult))
+	message,_ := json.Marshal(typeDataResult)
+	w.Write([]byte(message))
+}

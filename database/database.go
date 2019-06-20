@@ -30,6 +30,7 @@ var databaseConnection = false
 
 type User Models.User
 type DataType Models.TypeData
+type Data Models.Data
 
 func (user User) Validate() (errs url.Values) {
 	regexpEmail := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
@@ -168,6 +169,19 @@ func GetData(userId map[string]string,project map[string]int) *DataType {
 	fmt.Println("result", result)
 	if err != nil {
 		fmt.Println("There is some problem in fetching the data", err)
+	}
+	return result
+}
+
+func GetUserData(typeData map[string]string) *Data{
+    // return "check"
+	client = DatabaseConnect()
+	collection := client.Database("testing").Collection("data")
+	ctx,_ := context.WithTimeout(context.Background(), 5*time.Second)
+	result := &Data{}
+	err := collection.FindOne(ctx,interface{}(typeData)).Decode(result)
+    if(err != nil){
+		fmt.Println("There is some problem in fetching the data",err)
 	}
 	return result
 }

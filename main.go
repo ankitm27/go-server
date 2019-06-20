@@ -82,7 +82,7 @@ func main() {
 	// mux.Handle("/signup", authenticateData(signUpFunctionCall))
 	mux.Handle("/signup", http.HandlerFunc(user.SignUp))
 	mux.Handle("/getdatatypewise", http.HandlerFunc(user.GetDataTypeWise))
-	
+	mux.Handle("/getdata",http.HandlerFunc(user.GetData))
 	// delivery.Check()
 	// if err := http.ListenAndServe(":8080", nil); err != nil {
 	// 	fmt.Println("error in http server", err)
