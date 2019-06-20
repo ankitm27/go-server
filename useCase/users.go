@@ -40,14 +40,22 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 
 func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
 	data := r.URL.Query()
-	// fmt.Println("data", data)
+	fmt.Println("data", data)
 	userId := data["userId"][0]
+	typeDataStr := ""
+	if data["type"][0] != "" {
+		typeDataStr = data["type"][0]
+	}
 	// payload := make(map[string]string)
 	// err := json.Unmarshal(data, &payload)
 	// if err != nil {
 	// 	fmt.Println("There is some problem in getting data", err)
 	// }
-	typeData := database.GetData(map[string]string{"userid": userId})
+	project := make(map[string]int)
+	if typeDataStr != "" {
+		project[typeDataStr] = 1
+	}
+	typeData := database.GetData(map[string]string{"userid": userId}, project)
 	fmt.Println("data", typeData)
 	message, _ := json.Marshal(typeData)
 	// message := "check"

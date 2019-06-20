@@ -142,7 +142,7 @@ func CreateUser(data map[string]string) (interface{}, error) {
 	return result.InsertedID, nil
 }
 
-func GetData(userId map[string]string) *DataType {
+func GetData(userId map[string]string,project map[string]int) *DataType {
 	// return "check"
 	// data := make(map[string]int)
 	// data["info"] = 1
@@ -164,7 +164,7 @@ func GetData(userId map[string]string) *DataType {
 	// }
 	// result1, err := collection.InsertOne(ctx, data)
 	// fmt.Println("result", result1)
-	err := collection.FindOne(ctx, interface{}(userId)).Decode(result)
+	err := collection.FindOne(ctx, interface{}(userId),options.FindOne().SetProjection(interface{}(project))).Decode(result)
 	fmt.Println("result", result)
 	if err != nil {
 		fmt.Println("There is some problem in fetching the data", err)
