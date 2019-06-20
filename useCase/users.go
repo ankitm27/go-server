@@ -43,7 +43,9 @@ func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("data", data)
 	userId := data["userId"][0]
 	typeDataStr := ""
-	if data["type"][0] != "" {
+	value, ok := data["type"]
+	fmt.Println("value", value)
+	if ok && data["type"][0] != "" {
 		typeDataStr = data["type"][0]
 	}
 	// payload := make(map[string]string)
@@ -56,7 +58,9 @@ func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
 		project[typeDataStr] = 1
 	}
 	query := make(map[string]string)
-    if(data["userId"][0] != ""){
+	value, ok = data["userId"]
+	fmt.Println("value", value)
+	if ok && data["userId"][0] != "" {
 		query["userid"] = userId
 	}
 	typeData := database.GetData(query, project)
@@ -66,17 +70,21 @@ func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(message))
 }
 
-func GetData(w http.ResponseWriter, r *http.Request){
+func GetData(w http.ResponseWriter, r *http.Request) {
 	data := r.URL.Query()
-	fmt.Println("data",data)
-	typeData := data["type"][0]
+	fmt.Println("data", data)
+	// typeData := data["type"][0]
 	query := make(map[string]string)
-	if(data["type"][0] != ""){
-		query["datatype"] = typeData 
+	value, ok := data["type"]
+	// fmt.Println("value1111", value)
+	// typeData := data["type"][0]
+	if ok && data["type"][0] != "" {
+		query["datatype"] = data["type"][0]
 	}
+	fmt.Println("value", value)
 	typeDataResult := database.GetUserData(query)
-	fmt.Println("type data result",typeDataResult)
+	fmt.Println("type data result", typeDataResult)
 	// w.Write([]byte(typeDataResult))
-	message,_ := json.Marshal(typeDataResult)
+	message, _ := json.Marshal(typeDataResult)
 	w.Write([]byte(message))
 }
