@@ -81,10 +81,15 @@ func main() {
 	mux := mux.NewRouter()
 	// mux.Handle("/signup", authenticateData(signUpFunctionCall))
 	mux.Handle("/signup", http.HandlerFunc(user.SignUp))
+	mux.Handle("/getdatatypewise", http.HandlerFunc(user.GetDataTypeWise))
+	
+	// delivery.Check()
 	// if err := http.ListenAndServe(":8080", nil); err != nil {
 	// 	fmt.Println("error in http server", err)
 	// }
-	// mux.Handle("/", delivery.userDelivery)
+	// a := delivery.UserDelivery()
+	// fmt.Println("a", a)
+	// mux.Handle("/", delivery.UserDelivery())
 	err := endless.ListenAndServe("localhost:8080", mux)
 	if err != nil {
 		fmt.Println("there are some error in starting the golang server", err)

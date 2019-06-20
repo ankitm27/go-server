@@ -29,6 +29,7 @@ var databaseConnection = false
 // }
 
 type User Models.User
+type DataType Models.TypeData
 
 func (user User) Validate() (errs url.Values) {
 	regexpEmail := regexp.MustCompile("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$")
@@ -129,6 +130,7 @@ func CreateUser(data map[string]string) (interface{}, error) {
 		Secret:   secret,
 	}
 	// fmt.Println(userData.Validate())
+	fmt.Println("user data", userData)
 	userData.Validate()
 	collection := client.Database("testing").Collection("users")
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
@@ -138,4 +140,34 @@ func CreateUser(data map[string]string) (interface{}, error) {
 	}
 	fmt.Println("result", result)
 	return result.InsertedID, nil
+}
+
+func GetData(userId map[string]string) *DataType {
+	// return "check"
+	// data := make(map[string]int)
+	// data["info"] = 1
+	// data["success"] = 5
+	// data["warning"] = 2
+	// data["error"] = 1
+	// return data
+	client = DatabaseConnect()
+	collection := client.Database("testing").Collection("typedata")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	result := &DataType{}
+	// fmt.Println("user id", userId)
+	// data := DataType{
+	// 	UserId:  "check",
+	// 	Success: "1",
+	// 	Info:    "1",
+	// 	Warning: "1",
+	// 	Error:   "1",
+	// }
+	// result1, err := collection.InsertOne(ctx, data)
+	// fmt.Println("result", result1)
+	err := collection.FindOne(ctx, interface{}(userId)).Decode(result)
+	fmt.Println("result", result)
+	if err != nil {
+		fmt.Println("There is some problem in fetching the data", err)
+	}
+	return result
 }
