@@ -55,7 +55,11 @@ func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
 	if typeDataStr != "" {
 		project[typeDataStr] = 1
 	}
-	typeData := database.GetData(map[string]string{"userid": userId}, project)
+	query := make(map[string]string)
+    if(data["userId"][0] != ""){
+		query["userid"] = userId
+	}
+	typeData := database.GetData(query, project)
 	fmt.Println("data", typeData)
 	message, _ := json.Marshal(typeData)
 	// message := "check"
@@ -66,7 +70,11 @@ func GetData(w http.ResponseWriter, r *http.Request){
 	data := r.URL.Query()
 	fmt.Println("data",data)
 	typeData := data["type"][0]
-	typeDataResult := database.GetUserData(map[string]string{"datatype":typeData})
+	query := make(map[string]string)
+	if(data["type"][0] != ""){
+		query["datatype"] = typeData 
+	}
+	typeDataResult := database.GetUserData(query)
 	fmt.Println("type data result",typeDataResult)
 	// w.Write([]byte(typeDataResult))
 	message,_ := json.Marshal(typeDataResult)

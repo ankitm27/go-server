@@ -5,8 +5,8 @@ import "time"
 type Data struct {
 	DataType string
 	Data     interface{}
-	time     time.Time
+	Time     time.Time
 	UserId   string
-	ReqId     string
-	IP     string
+	ReqId    string
+	IP       string
 }
