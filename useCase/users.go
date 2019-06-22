@@ -54,6 +54,7 @@ func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
 	// 	fmt.Println("There is some problem in getting data", err)
 	// }
 	project := make(map[string]int)
+	// fmt.Println("project",)
 	if typeDataStr != "" {
 		project[typeDataStr] = 1
 	}
@@ -81,6 +82,15 @@ func GetData(w http.ResponseWriter, r *http.Request) {
 	if ok && data["type"][0] != "" {
 		query["datatype"] = data["type"][0]
 	}
+	value, ok = data["ip"]
+	if ok && data["ip"][0] != "" {
+		query["ip"] = data["ip"][0]
+	}
+	value, ok = data["reqId"]
+	if ok && data["reqId"][0] != "" {
+		query["reqid"] = data["reqId"][0]
+	}
+	fmt.Println("query", query)
 	fmt.Println("value", value)
 	typeDataResult := database.GetUserData(query)
 	fmt.Println("type data result", typeDataResult)
