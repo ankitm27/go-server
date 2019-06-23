@@ -6,6 +6,8 @@ import (
 	"go-server/database"
 	"io/ioutil"
 	"net/http"
+
+	middleware "go-server/middleware"
 )
 
 func SignUp(w http.ResponseWriter, r *http.Request) {
@@ -18,6 +20,19 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	if error != nil {
 		fmt.Println("error", error)
 	}
+	// token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+	// 	"username": payload["email"],
+	// 	"password": payload["password"],
+	// })
+	// fmt.Println("token", token)
+	// tokenString, err := token.SignedString([]byte("secret"))
+	// if err != nil {
+	// 	fmt.Println("err", err)
+	// }
+	// fmt.Println("token string", tokenString)
+	token := middleware.CreateToken(payload["email"], payload["password"])
+	fmt.Println("token11111111111111", token)
+	middleware.ValidateToken(token)
 	var message []byte
 	user := database.GetUser(map[string]string{"email": payload["email"]})
 	if user.ID == "" {
