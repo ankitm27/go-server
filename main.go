@@ -9,6 +9,8 @@ import (
 
 	user "go-server/useCase"
 
+	middleware "go-server/middleware"
+
 	"github.com/fvbock/endless"
 )
 
@@ -63,13 +65,13 @@ import (
 // 	w.Write(message)
 // }
 
-func authenticateData(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// log.Println("Executing middlewareOne")
-		next.ServeHTTP(w, r)
-		// log.Println("Executing middlewareOne again")
-	})
-}
+// func authenticateData(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		log.Println("Executing middlewareOne")
+// 		next.ServeHTTP(w, r)
+// 		log.Println("Executing middlewareOne again")
+// 	})
+// }
 
 func main() {
 	// redisclient.RedisClient("localhost")
@@ -80,9 +82,10 @@ func main() {
 	// signUpFunctionCall := http.HandlerFunc(user.SignUp)
 	mux := mux.NewRouter()
 	// mux.Handle("/signup", authenticateData(signUpFunctionCall))
-	mux.Handle("/signup", http.HandlerFunc(user.SignUp))
-	mux.Handle("/getdatatypewise", http.HandlerFunc(user.GetDataTypeWise))
-	mux.Handle("/getdata",http.HandlerFunc(user.GetData))
+	mux.Handle("/signup", middleware.AuthenticateData(http.HandlerFunc(user.SignUp)))
+	mux.Handle("/getdatatypewise", middleware.AuthenticateData(http.HandlerFunc(user.GetDataTypeWise)))
+	mux.Handle("/getdata", middleware.AuthenticateData(http.HandlerFunc(user.GetData)))
+	// http.Handle("/", authenticateData(mux))
 	// delivery.Check()
 	// if err := http.ListenAndServe(":8080", nil); err != nil {
 	// 	fmt.Println("error in http server", err)
