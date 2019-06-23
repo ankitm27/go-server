@@ -8,8 +8,6 @@ import (
 	"regexp"
 	"time"
 
-	cryptography "go-server/cryptography"
-
 	"go-server/Models"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -113,22 +111,23 @@ func GetUser(data map[string]string) *User {
 func CreateUser(data map[string]string) (interface{}, error) {
 	client = DatabaseConnect()
 	// fmt.Println(data)
-	key, keyerr := cryptography.Encrypt(data["email"])
-	if keyerr != nil {
-		// panic(keyerr)
-		fmt.Println("key err", keyerr)
-	}
-	secret, secreterr := cryptography.Encrypt(data["password"])
-	if secreterr != nil {
-		// panic(secreterr)
-		fmt.Println("secret err", secreterr)
-	}
+	// key, keyerr := cryptography.Encrypt(data["email"])
+	// if keyerr != nil {
+	// 	// panic(keyerr)
+	// 	fmt.Println("key err", keyerr)
+	// }
+	// secret, secreterr := cryptography.Encrypt(data["password"])
+	// if secreterr != nil {
+	// 	// panic(secreterr)
+	// 	fmt.Println("secret err", secreterr)
+	// }
 	userData := User{
 		ID:       bson.NewObjectId().Hex(),
 		Email:    data["email"],
 		Password: data["password"],
-		Key:      key,
-		Secret:   secret,
+		Key:      data["key"],
+		Secret:   data["secret"],
+	    HashedPassword: data["hashedPassword"],
 	}
 	// fmt.Println(userData.Validate())
 	fmt.Println("user data", userData)
@@ -143,7 +142,7 @@ func CreateUser(data map[string]string) (interface{}, error) {
 	return result.InsertedID, nil
 }
 
-func GetData(userId map[string]string,project map[string]int) *DataType {
+func GetData(userId map[string]string, project map[string]int) *DataType {
 	// return "check"
 	// data := make(map[string]int)
 	// data["info"] = 1
@@ -165,7 +164,7 @@ func GetData(userId map[string]string,project map[string]int) *DataType {
 	// }
 	// result1, err := collection.InsertOne(ctx, data)
 	// fmt.Println("result", result1)
-	err := collection.FindOne(ctx, interface{}(userId),options.FindOne().SetProjection(interface{}(project))).Decode(result)
+	err := collection.FindOne(ctx, interface{}(userId), options.FindOne().SetProjection(interface{}(project))).Decode(result)
 	fmt.Println("result", result)
 	if err != nil {
 		fmt.Println("There is some problem in fetching the data", err)
@@ -173,15 +172,15 @@ func GetData(userId map[string]string,project map[string]int) *DataType {
 	return result
 }
 
-func GetUserData(typeData map[string]string) *Data{
-    // return "check"
+func GetUserData(typeData map[string]string) *Data {
+	// return "check"
 	client = DatabaseConnect()
 	collection := client.Database("testing").Collection("data")
-	ctx,_ := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	result := &Data{}
-	err := collection.FindOne(ctx,interface{}(typeData)).Decode(result)
-    if(err != nil){
-		fmt.Println("There is some problem in fetching the data",err)
+	err := collection.FindOne(ctx, interface{}(typeData)).Decode(result)
+	if err != nil {
+		fmt.Println("There is some problem in fetching the data", err)
 	}
 	return result
 }

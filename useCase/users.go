@@ -3,6 +3,7 @@ package user
 import (
 	"encoding/json"
 	"fmt"
+	"go-server/cryptography"
 	"go-server/database"
 	"io/ioutil"
 	"net/http"
@@ -35,6 +36,25 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	middleware.ValidateToken(token)
 	var message []byte
 	user := database.GetUser(map[string]string{"email": payload["email"]})
+	key, keyerr := cryptography.Encrypt(payload["email"])
+	if keyerr != nil {
+		// panic(keyerr)
+		fmt.Println("key err", keyerr)
+	}
+	secret, secreterr := cryptography.Encrypt(payload["password"])
+	if secreterr != nil {
+		// panic(secreterr)
+		fmt.Println("secret err", secreterr)
+	}
+	fmt.Println("key", key)
+	fmt.Println("secret", secret)
+	payload["key"] = key
+	payload["secret"] = secret
+	hashedPassword := middleware.CreateHash([]byte(payload["password"]))
+	// result := middleware.ComparePassword([]byte(hashedPassword), []byte(payload["password"]))
+	// fmt.Println("result", result)
+	fmt.Println("hashed password", hashedPassword)
+	payload["hashedPassword"] = hashedPassword
 	if user.ID == "" {
 		user, err := database.CreateUser(payload)
 		if err != nil {
