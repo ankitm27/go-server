@@ -122,12 +122,12 @@ func CreateUser(data map[string]string) (interface{}, error) {
 	// 	fmt.Println("secret err", secreterr)
 	// }
 	userData := User{
-		ID:       bson.NewObjectId().Hex(),
-		Email:    data["email"],
-		Password: data["password"],
-		Key:      data["key"],
-		Secret:   data["secret"],
-	    HashedPassword: data["hashedPassword"],
+		ID:             bson.NewObjectId().Hex(),
+		Email:          data["email"],
+		Password:       data["password"],
+		Key:            data["key"],
+		Secret:         data["secret"],
+		HashedPassword: data["hashedPassword"],
 	}
 	// fmt.Println(userData.Validate())
 	fmt.Println("user data", userData)
@@ -183,4 +183,18 @@ func GetUserData(typeData map[string]string) *Data {
 		fmt.Println("There is some problem in fetching the data", err)
 	}
 	return result
+}
+
+func IsSecretValid(authenticate map[string]string) bool {
+	client = DatabaseConnect()
+	collection := client.Database("testing").Collection("users")
+	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
+	result := &User{}
+	// fmt.Println("autheticate", authenticate)
+	err := collection.FindOne(ctx, interface{}(authenticate)).Decode(result)
+	if err != nil {
+		fmt.Println("There is some problem in finding the secret, Please try after some time", err)
+		return false
+	}
+	return true
 }
