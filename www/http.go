@@ -12,7 +12,7 @@ var config1 = utility.GetConfig()
 var backendUrl = config.BackendUrl + ":" + config1.Port
 
 func HttpServer() {
-	mux := delivery.UserDelivery()
+	mux := delivery.Delivery()
 	fmt.Println("backend url", backendUrl)
 	err := endless.ListenAndServe(backendUrl, mux)
 	if err != nil {
