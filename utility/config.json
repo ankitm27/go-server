@@ -4,6 +4,6 @@
 	"Port":"8081",
 	"PubSubUrl":"127.0.0.1",
 	"PubSubPort":"6379",
-    "SocketPort":3333
+    "SocketPort":3333,
     "CronTime": 1
 }

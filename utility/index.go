@@ -23,7 +23,7 @@ type Configuration struct {
 func GetConfig() Configuration {
 	var absPath string
 	var _ string
-	if os.Getenv("Environemt") == "production" {
+	if os.Getenv("Environment") == "production" {
 		absPath, _ = filepath.Abs("./utility/config.json")
 	} else {
 		absPath, _ = filepath.Abs("./utility/development.json")
