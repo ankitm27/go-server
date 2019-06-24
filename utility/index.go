@@ -24,7 +24,7 @@ func GetConfig() Configuration {
 	if os.Getenv("Environemt") == "production" {
 		absPath, _ = filepath.Abs("./utility/config.json")
 	} else {
-		absPath, _ = filepath.Abs("./utility/config.json")
+		absPath, _ = filepath.Abs("./utility/development.json")
 	}
 	file, err := os.Open(absPath)
 	if err != nil {

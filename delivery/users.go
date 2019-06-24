@@ -1,10 +1,10 @@
 package delivery
 
 import (
-	"fmt"
 	user "go-server/useCase"
 	"net/http"
-	"reflect"
+
+	middleware "go-server/middleware"
 
 	"github.com/gorilla/mux"
 )
@@ -12,7 +12,7 @@ import (
 func UserDelivery() *mux.Router {
 	mux := mux.NewRouter()
 	mux.Handle("/signup", http.HandlerFunc(user.SignUp))
-	fmt.Println("mux", reflect.TypeOf(mux))
-	// fmt.Println("")
+	mux.Handle("/getdatatypewise", middleware.AuthenticateData(http.HandlerFunc(user.GetDataTypeWise)))
+	mux.Handle("/getdata", middleware.AuthenticateData(http.HandlerFunc(user.GetData)))
 	return mux
 }

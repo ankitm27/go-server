@@ -3,15 +3,18 @@ package main
 import (
 	"fmt"
 	database "go-server/database"
-	"net/http"
 
-	"github.com/gorilla/mux"
+	// "net/http"
 
-	user "go-server/useCase"
+	// "github.com/gorilla/mux"
 
-	middleware "go-server/middleware"
+	// user "go-server/useCase"
+
+	// middleware "go-server/middleware"
 
 	utility "go-server/utility"
+
+	delivery "go-server/delivery"
 
 	"github.com/fvbock/endless"
 )
@@ -82,11 +85,11 @@ func main() {
 	// go socketServer.CreateServer()
 	// fmt.Println("")
 	// signUpFunctionCall := http.HandlerFunc(user.SignUp)
-	mux := mux.NewRouter()
+	// mux := mux.NewRouter()
 	// mux.Handle("/signup", authenticateData(signUpFunctionCall))
-	mux.Handle("/signup", http.HandlerFunc(user.SignUp))
-	mux.Handle("/getdatatypewise", middleware.AuthenticateData(http.HandlerFunc(user.GetDataTypeWise)))
-	mux.Handle("/getdata", middleware.AuthenticateData(http.HandlerFunc(user.GetData)))
+	// mux.Handle("/signup", http.HandlerFunc(user.SignUp))
+	// mux.Handle("/getdatatypewise", middleware.AuthenticateData(http.HandlerFunc(user.GetDataTypeWise)))
+	// mux.Handle("/getdata", middleware.AuthenticateData(http.HandlerFunc(user.GetData)))
 	// http.Handle("/", authenticateData(mux))
 	// delivery.Check()
 	// if err := http.ListenAndServe(":8080", nil); err != nil {
@@ -95,6 +98,7 @@ func main() {
 	// a := delivery.UserDelivery()
 	// fmt.Println("a", a)
 	// mux.Handle("/", delivery.UserDelivery())
+	mux := delivery.UserDelivery()
 	config := utility.GetConfig()
 	backendUrl := config.BackendUrl + ":" + config.Port
 	fmt.Println("backend url", backendUrl)
