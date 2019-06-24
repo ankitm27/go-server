@@ -14,8 +14,13 @@ type Configuration struct {
 // var filename = "/go-server/utility/config.json"
 
 func GetConfig() Configuration {
-	absPath, _ := filepath.Abs("./utility/config.json")
-
+	var absPath string
+	var _ string
+	if os.Getenv("Environemt") == "production" {
+		absPath, _ = filepath.Abs("./utility/config.json")
+	} else {
+		absPath, _ = filepath.Abs("./utility/config.json")
+	}
 	file, err := os.Open(absPath)
 	if err != nil {
 		fmt.Println("There is some problem in getting config, Please try after some time", err)
