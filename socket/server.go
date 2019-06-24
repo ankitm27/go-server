@@ -7,28 +7,27 @@ import (
 	"io"
 	"log"
 	"net"
-	"strconv"
 	"strings"
 )
 
-func CreateServer(port int) {
-	fmt.Println("check")
-	listen, err := net.Listen("tcp4", ":"+strconv.Itoa(port))
+// func CreateServer(port int) {
+// 	fmt.Println("check")
+// 	listen, err := net.Listen("tcp4", ":"+strconv.Itoa(port))
 
-	if err != nil {
-		log.Fatalf("Socket listen port %d failed,%s", port, err)
-	}
+// 	if err != nil {
+// 		log.Fatalf("Socket listen port %d failed,%s", port, err)
+// 	}
 
-	for {
-		conn, err := listen.Accept()
-		if err != nil {
-			log.Fatalln(err)
-			continue
-		}
-		go handleRequest(conn)
-	}
+// 	for {
+// 		conn, err := listen.Accept()
+// 		if err != nil {
+// 			log.Fatalln(err)
+// 			continue
+// 		}
+// 		go handleRequest(conn)
+// 	}
 
-}
+// }
 
 func handleRequest(conn net.Conn) {
 

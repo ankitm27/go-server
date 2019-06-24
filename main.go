@@ -79,7 +79,7 @@ func main() {
 	// redisClient.RedisClient()
 	database.DatabaseConnect()
 	// redisclient.Schedule(1 * time.Second)
-	// go socketserver.CreateServer(3333)
+	// go socketServer.CreateServer()
 	// fmt.Println("")
 	// signUpFunctionCall := http.HandlerFunc(user.SignUp)
 	mux := mux.NewRouter()

@@ -13,6 +13,7 @@ type Configuration struct {
 	Port        string
 	PubSubUrl   string
 	PubSubPort  string
+	SocketPort  int
 }
 
 // var filename = "/go-server/utility/config.json"
