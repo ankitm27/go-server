@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 type Configuration struct {
@@ -14,6 +15,7 @@ type Configuration struct {
 	PubSubUrl   string
 	PubSubPort  string
 	SocketPort  int
+	CronTime    time.Duration
 }
 
 // var filename = "/go-server/utility/config.json"

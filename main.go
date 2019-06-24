@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	database "go-server/database"
 
 	// "net/http"
 
@@ -12,11 +10,7 @@ import (
 
 	// middleware "go-server/middleware"
 
-	utility "go-server/utility"
-
-	delivery "go-server/delivery"
-
-	"github.com/fvbock/endless"
+	www "go-server/www"
 )
 
 // func signUp(w http.ResponseWriter, r *http.Request) {
@@ -80,8 +74,8 @@ import (
 
 func main() {
 	// redisClient.RedisClient()
-	database.DatabaseConnect()
-	// redisclient.Schedule(1 * time.Second)
+	// database.DatabaseConnect()
+	// services.Schedule(1 * time.Second)
 	// go socketServer.CreateServer()
 	// fmt.Println("")
 	// signUpFunctionCall := http.HandlerFunc(user.SignUp)
@@ -98,14 +92,19 @@ func main() {
 	// a := delivery.UserDelivery()
 	// fmt.Println("a", a)
 	// mux.Handle("/", delivery.UserDelivery())
-	mux := delivery.UserDelivery()
-	config := utility.GetConfig()
-	backendUrl := config.BackendUrl + ":" + config.Port
-	fmt.Println("backend url", backendUrl)
-	err := endless.ListenAndServe(backendUrl, mux)
-	if err != nil {
-		fmt.Println("there are some error in starting the golang server", err)
-	}
+	www.RunDatabaseServer()
+	// www.RunPortServer()
+	// www.RunServer()
+	// www.Scheduler()
+	// mux := delivery.UserDelivery()
+	// config := utility.GetConfig()
+	// backendUrl := config.BackendUrl + ":" + config.Port
+	// fmt.Println("backend url", backendUrl)
+	// err := endless.ListenAndServe(backendUrl, mux)
+	// if err != nil {
+	// 	fmt.Println("there are some error in starting the golang server", err)
+	// }
+	www.HttpServer()
 }
 
 // func encodeHex(dst []byte, uuid UUID) {

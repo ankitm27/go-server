@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"go-server/database"
 	"strings"
-	"time"
 )
 
 // var client *redis.Client
@@ -105,14 +104,18 @@ func convertToSliceObject(data []string) []interface{} {
 	return slices
 }
 
-func Schedule(interval time.Duration) *time.Ticker {
-	ticker := time.NewTicker(interval)
-	go func() {
-		for range ticker.C {
-			getRedisData("check1")
-		}
-	}()
-	return ticker
+// func Schedule(interval time.Duration) *time.Ticker {
+// 	ticker := time.NewTicker(interval)
+// 	go func() {
+// 		for range ticker.C {
+// 			getRedisData("check1")
+// 		}
+// 	}()
+// 	return ticker
+// }
+
+func ScheduleFunc() {
+	getRedisData("check1")
 }
 
 func isTransportOver(data string) (over bool) {

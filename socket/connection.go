@@ -12,7 +12,7 @@ var config = utility.GetConfig()
 var socketPort = config.SocketPort
 
 func CreateServer() {
-	fmt.Println("check1111")
+	fmt.Println("check11111111111111")
 	listen, err := net.Listen("tcp4", ":"+strconv.Itoa(socketPort))
 
 	if err != nil {

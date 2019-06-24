@@ -13,7 +13,7 @@ var config = utility.GetConfig()
 var url = config.PubSubUrl + ":" + config.PubSubPort
 
 func RedisClient() *redis.Client {
-	// fmt.Println("check")
+	// fmt.Println("check11111111")
 	if !isConnectionAvailable {
 		client = redis.NewClient(&redis.Options{
 			Addr:     url,
