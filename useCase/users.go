@@ -31,9 +31,9 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	// 	fmt.Println("err", err)
 	// }
 	// fmt.Println("token string", tokenString)
-	token := middleware.CreateToken(payload["email"], payload["password"])
+	// token := middleware.CreateToken(payload["email"], payload["password"])
 	// fmt.Println("token11111111111111", token)
-	middleware.ValidateToken(token)
+	// middleware.ValidateToken(token)
 	var message []byte
 	user := database.GetUser(map[string]string{"email": payload["email"]})
 	key, keyerr := cryptography.Encrypt(payload["email"])
@@ -53,7 +53,7 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	hashedPassword := middleware.CreateHash([]byte(payload["password"]))
 	// result := middleware.ComparePassword([]byte(hashedPassword), []byte(payload["password"]))
 	// fmt.Println("result", result)
-	fmt.Println("hashed password", hashedPassword)
+	// fmt.Println("hashed password", hashedPassword)
 	payload["hashedPassword"] = hashedPassword
 	if user.ID == "" {
 		user, err := database.CreateUser(payload)

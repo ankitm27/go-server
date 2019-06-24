@@ -99,6 +99,7 @@ func GetUser(data map[string]string) *User {
 	projection := map[string]int{
 		"_id":      0,
 		"password": 0,
+	    "hashedPassword":0,
 	}
 	err := collection.FindOne(ctx, interface{}(data), options.FindOne().SetProjection(interface{}(projection))).Decode(result)
 

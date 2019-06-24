@@ -82,7 +82,7 @@ func main() {
 	// signUpFunctionCall := http.HandlerFunc(user.SignUp)
 	mux := mux.NewRouter()
 	// mux.Handle("/signup", authenticateData(signUpFunctionCall))
-	mux.Handle("/signup", middleware.AuthenticateData(http.HandlerFunc(user.SignUp)))
+	mux.Handle("/signup", http.HandlerFunc(user.SignUp))
 	mux.Handle("/getdatatypewise", middleware.AuthenticateData(http.HandlerFunc(user.GetDataTypeWise)))
 	mux.Handle("/getdata", middleware.AuthenticateData(http.HandlerFunc(user.GetData)))
 	// http.Handle("/", authenticateData(mux))

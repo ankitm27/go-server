@@ -6,5 +6,5 @@ type User struct {
 	Password       string `bson:"password" json:"-"`
 	Key            string `bson:"key" json:"key"`
 	Secret         string `bson:"secret" json:"secret"`
-	HashedPassword string `bson:"hashedPassword" json:"hashedPassword"`
+	HashedPassword string `bson:"hashedPassword" json:"-"`
 }
