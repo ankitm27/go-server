@@ -4,32 +4,29 @@ import (
 	"encoding/json"
 	"fmt"
 	"go-server/database"
-	"reflect"
 	"strings"
 	"time"
-
-	"github.com/go-redis/redis"
 )
 
-var client *redis.Client
-var isConnectionAvailable = false
+// var client *redis.Client
+// var isConnectionAvailable = false
 
-func RedisClient(host string) *redis.Client {
-	if !isConnectionAvailable {
-		client = redis.NewClient(&redis.Options{
-			Addr:     host + ":6379",
-			Password: "",
-			DB:       0,
-		})
-		fmt.Println(reflect.TypeOf(client))
-		isConnectionAvailable = true
-	}
-	return client
+// func RedisClient(host string) *redis.Client {
+// 	if !isConnectionAvailable {
+// 		client = redis.NewClient(&redis.Options{
+// 			Addr:     host + ":6379",
+// 			Password: "",
+// 			DB:       0,
+// 		})
+// 		fmt.Println(reflect.TypeOf(client))
+// 		isConnectionAvailable = true
+// 	}
+// 	return client
 
-}
+// }
 
 func createRedisQueue(key string, value string) {
-	client1 := RedisClient("localhost")
+	client1 := RedisClient()
 	if value != "" {
 		err := client1.RPush(key, value).Err()
 		if err != nil {
@@ -50,7 +47,7 @@ func getRedisData(key string) {
 }
 
 func getKeyLength(key string) int {
-	client1 := RedisClient("localhost")
+	client1 := RedisClient()
 	val, err := client1.LLen(key).Result()
 	if err != nil {
 		fmt.Println("error in getting the data", err)
@@ -60,7 +57,7 @@ func getKeyLength(key string) int {
 }
 
 func getNElement(key string, n int64) []string {
-	client1 := RedisClient("localhost")
+	client1 := RedisClient()
 	val, err := client1.LRange(key, 0, n-1).Result()
 	if err != nil {
 		fmt.Println("Error while getting elements: ")
@@ -70,7 +67,7 @@ func getNElement(key string, n int64) []string {
 }
 
 func removeNElement(key string, n int64) {
-	client1 := RedisClient("localhost")
+	client1 := RedisClient()
 	_, err := client1.LTrim(key, n+1, -1).Result()
 	if err != nil {
 		fmt.Println("Error while getting elements: ")

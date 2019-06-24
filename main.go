@@ -11,6 +11,8 @@ import (
 
 	middleware "go-server/middleware"
 
+	utility "go-server/utility"
+
 	"github.com/fvbock/endless"
 )
 
@@ -74,7 +76,7 @@ import (
 // }
 
 func main() {
-	// redisclient.RedisClient("localhost")
+	// redisClient.RedisClient()
 	database.DatabaseConnect()
 	// redisclient.Schedule(1 * time.Second)
 	// go socketserver.CreateServer(3333)
@@ -93,7 +95,10 @@ func main() {
 	// a := delivery.UserDelivery()
 	// fmt.Println("a", a)
 	// mux.Handle("/", delivery.UserDelivery())
-	err := endless.ListenAndServe("localhost:8081", mux)
+	config := utility.GetConfig()
+	backendUrl := config.BackendUrl + ":" + config.Port
+	fmt.Println("backend url", backendUrl)
+	err := endless.ListenAndServe(backendUrl, mux)
 	if err != nil {
 		fmt.Println("there are some error in starting the golang server", err)
 	}

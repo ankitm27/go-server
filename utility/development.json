@@ -1,3 +1,7 @@
 {
-    "DatabaseUrl":"mongodb://127.0.0.1:27017"
+    "DatabaseUrl":"mongodb://127.0.0.1:27017",
+    "BackendUrl":"127.0.0.1",
+    "Port":"8081",
+    "PubSubUrl":"127.0.0.1",
+    "PubSubPort":"6379"
 }

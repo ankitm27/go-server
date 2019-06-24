@@ -9,6 +9,10 @@ import (
 
 type Configuration struct {
 	DatabaseUrl string
+	BackendUrl  string
+	Port        string
+	PubSubUrl   string
+	PubSubPort  string
 }
 
 // var filename = "/go-server/utility/config.json"
