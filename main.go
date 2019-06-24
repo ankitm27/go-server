@@ -93,7 +93,7 @@ func main() {
 	// a := delivery.UserDelivery()
 	// fmt.Println("a", a)
 	// mux.Handle("/", delivery.UserDelivery())
-	err := endless.ListenAndServe("localhost:8080", mux)
+	err := endless.ListenAndServe("localhost:8081", mux)
 	if err != nil {
 		fmt.Println("there are some error in starting the golang server", err)
 	}
