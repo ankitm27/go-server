@@ -125,7 +125,7 @@ func GetData(w http.ResponseWriter, r *http.Request) {
 	if ok && data["reqId"][0] != "" {
 		query["reqid"] = data["reqId"][0]
 	}
-	fmt.Println("query", query)
+	fmt.Println("query1111", query)
 	fmt.Println("value", value)
 	typeDataResult := database.GetUserData(query)
 	fmt.Println("type data result", typeDataResult)

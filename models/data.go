@@ -3,7 +3,7 @@ package Models
 import "time"
 
 type Data struct {
-	DataType string
+	DataType string 
 	Data     interface{}
 	Time     time.Time
 	UserId   string

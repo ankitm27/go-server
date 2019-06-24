@@ -97,9 +97,9 @@ func GetUser(data map[string]string) *User {
 	collection := client.Database("testing").Collection("users")
 	ctx, _ := context.WithTimeout(context.Background(), 5*time.Second)
 	projection := map[string]int{
-		"_id":      0,
-		"password": 0,
-	    "hashedPassword":0,
+		"_id":            0,
+		"password":       0,
+		"hashedPassword": 0,
 	}
 	err := collection.FindOne(ctx, interface{}(data), options.FindOne().SetProjection(interface{}(projection))).Decode(result)
 
@@ -182,7 +182,10 @@ func GetUserData(typeData map[string]string) *Data {
 	err := collection.FindOne(ctx, interface{}(typeData)).Decode(result)
 	if err != nil {
 		fmt.Println("There is some problem in fetching the data", err)
+		var data *Data
+		return data
 	}
+	fmt.Println("result", result)
 	return result
 }
 
