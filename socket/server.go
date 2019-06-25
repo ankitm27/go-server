@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
+	"go-server/redis"
 	"io"
 	"log"
 	"net"
@@ -79,6 +80,8 @@ ILOOP:
 			type dataObj struct {
 				Data interface{}
 				// LastName  string
+				Key    string
+				Secret string
 			}
 			var p dataObj
 			err = json.Unmarshal(bytes, &p)
@@ -88,7 +91,10 @@ ILOOP:
 			// fmt.Println("bytes", string(bytes))
 			fmt.Println("p", p)
 			fmt.Println("data")
-			// redis.AddDataIntoRedis(data)
+			fmt.Println("data", p.Data)
+			fmt.Println("data", p.Key)
+			fmt.Println("data1111", p.Secret)
+			redis.AddDataIntoRedis(data)
 			if isEOF {
 				break ILOOP
 			}
