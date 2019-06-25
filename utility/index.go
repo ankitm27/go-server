@@ -9,13 +9,14 @@ import (
 )
 
 type Configuration struct {
-	DatabaseUrl string
-	BackendUrl  string
-	Port        string
-	PubSubUrl   string
-	PubSubPort  string
-	SocketPort  int
-	CronTime    time.Duration
+	DatabaseUrl      string
+	BackendUrl       string
+	Port             string
+	PubSubUrl        string
+	PubSubPort       string
+	SocketPort       int
+	CronTime         time.Duration
+	ElasticSearchUrl string
 }
 
 // var filename = "/go-server/utility/config.json"

@@ -10,6 +10,8 @@ import (
 
 	// middleware "go-server/middleware"
 
+	"context"
+	"go-server/elasticSearch"
 	www "go-server/www"
 )
 
@@ -92,8 +94,8 @@ func main() {
 	// a := delivery.UserDelivery()
 	// fmt.Println("a", a)
 	// mux.Handle("/", delivery.UserDelivery())
-	www.RunDatabaseServer()
-	www.RunPortServer()
+	// www.RunDatabaseServer()
+	// www.RunPortServer()
 	// www.RunServer()
 	// www.Scheduler()
 	// mux := delivery.UserDelivery()
@@ -104,7 +106,10 @@ func main() {
 	// if err != nil {
 	// 	fmt.Println("there are some error in starting the golang server", err)
 	// }
-	www.HttpServer()
+	// www.HttpServer()
+	www.StartElasticSearch()
+	ctx := context.Background()
+	elasticSearch.CreateIndexIfDoesNotExist(ctx, "user")
 }
 
 // func encodeHex(dst []byte, uuid UUID) {
