@@ -93,7 +93,7 @@ func main() {
 	// fmt.Println("a", a)
 	// mux.Handle("/", delivery.UserDelivery())
 	www.RunDatabaseServer()
-	// www.RunPortServer()
+	www.RunPortServer()
 	// www.RunServer()
 	// www.Scheduler()
 	// mux := delivery.UserDelivery()

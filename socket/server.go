@@ -2,11 +2,12 @@ package socket
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
-	redis "go-server/redis"
 	"io"
 	"log"
 	"net"
+	"reflect"
 	"strings"
 )
 
@@ -51,8 +52,43 @@ ILOOP:
 			if isEOF {
 				data = strings.Replace(data, "\r\n\r\n", "", 1)
 			}
-			fmt.Println("data", data)
-			redis.AddDataIntoRedis(data)
+			fmt.Println("data1111", data)
+			fmt.Println("reflect", reflect.TypeOf(data))
+			// var x interface{} = data
+			// fmt.Println("x", x)
+			// fmt.Println("reflect", reflect.TypeOf(x))
+			// bytes, err := json.Marshal(data)
+			// if err != nil {
+			// 	fmt.Println("There is some problem, Please try again")
+			// }
+			// fmt.Println("bytes", bytes)
+			// type dataObj struct {
+			// 	data string
+			// }
+			// var data dataObj
+			// err = json.Unmarshal(bytes, &data)
+			// if err != nil {
+			// 	fmt.Println("There is some problem, Please after some time",err)
+			// }
+			// data = `{"data":{"Name":"Eve","Age":6,"Parents":["Alice","Bob"]}}`
+			rawIn := json.RawMessage(data)
+			bytes, err := rawIn.MarshalJSON()
+			if err != nil {
+				fmt.Println("There is some problem,Please try after some time", err)
+			}
+			type dataObj struct {
+				Data interface{}
+				// LastName  string
+			}
+			var p dataObj
+			err = json.Unmarshal(bytes, &p)
+			if err != nil {
+				fmt.Println("There is some problem, Please try after some time1", err)
+			}
+			// fmt.Println("bytes", string(bytes))
+			fmt.Println("p", p)
+			fmt.Println("data")
+			// redis.AddDataIntoRedis(data)
 			if isEOF {
 				break ILOOP
 			}
