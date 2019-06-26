@@ -16,4 +16,7 @@ import (
 func DataDelivery(mux *mux.Router) {
 	mux.Handle("/getdatatypewise", middleware.AuthenticateData(http.HandlerFunc(useCase.GetDataTypeWise)))
 	mux.Handle("/getdata", middleware.AuthenticateData(http.HandlerFunc(useCase.GetData)))
+	mux.Handle("/createindex", http.HandlerFunc(useCase.CreateIndex))
+	mux.Handle("/getsearchdata", middleware.AuthenticateData(http.HandlerFunc(useCase.GetSearchData)))
+    mux.Handle("/insertdata",middleware.AuthenticateData(http.HandlerFunc(useCase.InsertData)))
 }

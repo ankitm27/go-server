@@ -7,11 +7,12 @@ import (
 	"go-server/utility"
 	"io/ioutil"
 	"net/http"
-	"reflect"
 	"time"
 
 	loghttp "github.com/motemen/go-loghttp"
 	"github.com/motemen/go-nuts/roundtime"
+
+	// "github.com/motemen/go-nuts/roundtime"
 	"gopkg.in/olivere/elastic.v5"
 	elasticapi "gopkg.in/olivere/elastic.v5"
 )
@@ -35,31 +36,31 @@ func NewElasticClient(ctx context.Context, sniff bool, responseSize int) (*elast
 						// Restore the io.ReadCloser to request
 						req.Body = ioutil.NopCloser(bytes.NewBuffer(bodyBuffer))
 					}
-					fmt.Println("--------- Elasticsearch ---------")
-					fmt.Println("Request URL : ", req.URL)
-					fmt.Println("Request Method : ", req.Method)
-					fmt.Println("Request Body : ", string(bodyBuffer))
+					// fmt.Println("--------- Elasticsearch ---------")
+					// fmt.Println("Request URL : ", req.URL)
+					// fmt.Println("Request Method : ", req.Method)
+					// fmt.Println("Request Body : ", string(bodyBuffer))
 				},
 				LogResponse: func(resp *http.Response) {
 					ctx := resp.Request.Context()
 					if start, ok := ctx.Value(loghttp.ContextKeyRequestStart).(time.Time); ok {
-						fmt.Println("Response Status : ", resp.StatusCode)
+						// fmt.Println("Response Status : ", resp.StatusCode)
 						fmt.Println("Response Duration : ", roundtime.Duration(time.Now().Sub(start), 2))
 					} else {
-						fmt.Println("Response Status : ", resp.StatusCode)
+						// fmt.Println("Response Status : ", resp.StatusCode)
 					}
-					fmt.Println("--------------------------------")
+					// fmt.Println("--------------------------------")
 				},
 			},
 		}
-		fmt.Println("client1111", client)
+		// fmt.Println("client1111", client)
 		client, err = elasticapi.NewClient(elasticapi.SetURL(url), elasticapi.SetSniff(sniff), elasticapi.SetHttpClient(httpClient))
-		fmt.Println("reflect type of", reflect.TypeOf(client))
+		// fmt.Println("reflect type of", reflect.TypeOf(client))
 		if err != nil {
 			return nil, err
 		}
 
-		err = Ping(ctx, client, url)
+		err = Ping(ctx, url)
 		if err != nil {
 			return nil, err
 		}

@@ -10,19 +10,28 @@ import (
 	elasticapi "gopkg.in/olivere/elastic.v5"
 )
 
+type data struct {
+	check string
+}
+
+const (
+	indexName = "users_index1"
+	docType   = "user1"
+)
+
 func CreateIndexIfDoesNotExist(ctx context.Context, indexName string) error {
 	client, err := NewElasticClient(context.Background(), false, -1)
 	if err != nil {
 		fmt.Println("There is some problem, Please try after some time")
 	}
-	fmt.Println("check1111111")
+	// fmt.Println("check1111111")
 	exists, err := client.IndexExists(indexName).Do(ctx)
 	if err != nil {
 		fmt.Println("Thers is some problem, Please try after some time", err)
 		return err
 	}
 
-	fmt.Println("exists", exists)
+	// fmt.Println("exists", exists)
 	if exists {
 		return nil
 	}
@@ -42,8 +51,7 @@ func CreateIndexIfDoesNotExist(ctx context.Context, indexName string) error {
 	return nil
 }
 
-func Ping(ctx context.Context, client *elasticapi.Client, url string) error {
-
+func Ping(ctx context.Context, url string) error {
 	// Ping the Elasticsearch server to get HttpStatus, version number
 	client, err := NewElasticClient(context.Background(), false, -1)
 	if err != nil {
@@ -61,67 +69,72 @@ func Ping(ctx context.Context, client *elasticapi.Client, url string) error {
 	return errors.New("elastic client is nil")
 }
 
-func InsertUsers(ctx context.Context, indexName string, docType string, data interface{}) {
-	// insert data in elasticsearch
-	client, err := NewElasticClient(context.Background(), false, -1)
-	if err != nil {
-		fmt.Println("There is some problem, Please try after some time")
-	}
-	// type User struct {
-	// 	UserID    int    `json:"id"`
-	// 	Email     string `json:"email"`
-	// 	FirstName string `json:"firstname"`
-	// 	LastName  string `json:"lastname"`
-	// 	Age       int    `json:"age"`
-	// 	IsActive  bool   `json:"isActive"`
-	// 	Balance   int    `json:"balance"`
-	// 	Phone     string `json:"phone"`
-	// }
-	// var listUsers []User
-	// for index := 1; index < 5; index++ {
+// func InsertUsers(ctx context.Context, indexName string, docType string, data1 string) {
+// 	// insert data in elasticsearch
+// 	client, err := NewElasticClient(context.Background(), false, -1)
+// 	if err != nil {
+// 		fmt.Println("There is some problem, Please try after some time", err)
+// 	}
+// 	// type User struct {
+// 	// 	UserID    int    `json:"id"`
+// 	// 	Email     string `json:"email"`
+// 	// 	FirstName string `json:"firstname"`
+// 	// 	LastName  string `json:"lastname"`
+// 	// 	Age       int    `json:"age"`
+// 	// 	IsActive  bool   `json:"isActive"`
+// 	// 	Balance   int    `json:"balance"`
+// 	// 	Phone     string `json:"phone"`
+// 	// }
+// 	// var listUsers []User
+// 	// for index := 1; index < 5; index++ {
 
-	// 	user := User{
-	// 		UserID:    index,
-	// 		Email:     fmt.Sprintf("test%d@gmail.com", index),
-	// 		FirstName: fmt.Sprintf("FirstName_%d", index),
-	// 		LastName:  fmt.Sprintf("LastName_%d", index),
-	// 	}
+// 	// 	user := User{
+// 	// 		UserID:    index,
+// 	// 		Email:     fmt.Sprintf("test%d@gmail.com", index),
+// 	// 		FirstName: fmt.Sprintf("FirstName_%d", index),
+// 	// 		LastName:  fmt.Sprintf("LastName_%d", index),
+// 	// 	}
 
-	// 	listUsers = append(listUsers, user)
-	// }
+// 	// 	listUsers = append(listUsers, user)
+// 	// }
 
-	// for _, userObj := range listUsers {
-	_, err = client.Index().Index(indexName).Type(docType).BodyJson(data).Do(ctx)
-	if err != nil {
-		fmt.Printf("UserId=%d was nos created. Error : %s \n", err)
-		// continue
-	}
-	// }
+// 	// for _, userObj := range listUsers {
+// 	dataObj := &data{data1}
+// 	fmt.Println("data obj", dataObj)
+// 	result, err := client.Index().Index(indexName).Type(docType).BodyJson(dataObj).Do(ctx)
+// 	if err != nil {
+// 		fmt.Printf("UserId=%d was nos created. Error : %s \n", err)
+// 		// continue
+// 	}
+// 	// }
 
-	// Flush data (need for refreshing data in index) after this command possible to do get.
-	client.Flush().Index(indexName).Do(ctx)
-}
+// 	// Flush data (need for refreshing data in index) after this command possible to do get.
+// 	fmt.Println("result", result)
+// 	fmt.Println("reflect typeof", reflect.TypeOf(result))
+// 	// client.Flush().Index(indexName).Do(ctx)
 
-func GetAll(ctx context.Context, indexName string) interface{} {
-	client, err := NewElasticClient(context.Background(), false, -1)
-	if err != nil {
-		fmt.Println("There is some problem, Please try after some time")
-	}
-	query := elasticapi.MatchAllQuery{}
+// }
 
-	searchResult, err := client.Search().
-		Index(indexName). // search in index
-		Query(query).     // specify the query
-		Do(ctx)           // execute
-	if err != nil {
-		fmt.Printf("Error during execution GetAll : %s", err.Error())
-	}
+// func GetAll(ctx context.Context, indexName string) []data {
+// 	client, err := NewElasticClient(context.Background(), false, -1)
+// 	if err != nil {
+// 		fmt.Println("There is some problem, Please try after some time")
+// 	}
+// 	query := elasticapi.MatchAllQuery{}
 
-	fmt.Println("search result", searchResult)
+// 	searchResult, err := client.Search().
+// 		Index(indexName). // search in index
+// 		Query(query).     // specify the query
+// 		Do(ctx)           // execute
+// 	if err != nil {
+// 		fmt.Printf("Error during execution GetAll : %s", err.Error())
+// 	}
 
-	return convertSearchResultToUsers(searchResult)
+// 	fmt.Println("search result", searchResult)
 
-}
+// 	return convertSearchResultToUsers(searchResult)
+
+// }
 
 type User struct {
 	UserID    int    `json:"id"`
@@ -134,19 +147,21 @@ type User struct {
 	Phone     string `json:"phone"`
 }
 
-func convertSearchResultToUsers(searchResult *elasticapi.SearchResult) interface{} {
-	var result []User
-	for _, hit := range searchResult.Hits.Hits {
-		var userObj User
-		err := json.Unmarshal(*hit.Source, &userObj)
-		if err != nil {
-			log.Printf("Can't deserialize 'user' object : %s", err.Error())
-			continue
-		}
-		result = append(result, userObj)
-	}
-	return result
-}
+// func convertSearchResultToUsers(searchResult *elasticapi.SearchResult) []data {
+// 	var result []data
+// 	for _, hit := range searchResult.Hits.Hits {
+// 		var userObj data
+// 		err := json.Unmarshal(*hit.Source, &userObj)
+// 		if err != nil {
+// 			log.Printf("Can't deserialize 'user' object : %s", err.Error())
+// 			continue
+// 		}
+// 		fmt.Println("user obj", userObj)
+// 		result = append(result, userObj)
+// 	}
+// 	fmt.Println("result", result)
+// 	return result
+// }
 
 func GetUserByID(ctx context.Context, userID int, indexName string) interface{} {
 	client, err := NewElasticClient(context.Background(), false, -1)
@@ -167,10 +182,10 @@ func GetUserByID(ctx context.Context, userID int, indexName string) interface{} 
 	}
 
 	var result = convertSearchResultToUsers(searchResult)
-	if result != nil {
-		return result
-	}
-
+	// if result != nil {
+	// 	return result
+	// }
+	fmt.Println("result", result)
 	return User{}
 }
 
@@ -210,4 +225,67 @@ func DeleteUser(ctx context.Context, userID int, indexName string, docType strin
 
 	// Flush data (need for refreshing data in index) after this command possible to do get.
 	client.Flush().Index(indexName).Do(ctx)
+}
+
+func InsertUsers(ctx context.Context) {
+	// insert data in elasticsearch
+	client, err := NewElasticClient(context.Background(), false, -1)
+	if err != nil {
+		fmt.Println("There is some problem, Please try after some time")
+	}
+	// var listUsers []User
+	// for index := 1; index < 5; index++ {
+
+	user := User{
+		UserID:    22,
+		Email:     fmt.Sprintf("test1212%d@gmail.com", 1),
+		FirstName: fmt.Sprintf("FirstName_%d", 1),
+		LastName:  fmt.Sprintf("LastName_%d", 1),
+	}
+
+	// listUsers = append(listUsers, user)
+	// }
+
+	// for _, userObj := range listUsers {
+	_, err = client.Index().Index(indexName).Type(docType).BodyJson(user).Do(ctx)
+	if err != nil {
+		fmt.Printf("UserId=%d was nos created. Error : %s \n", err.Error())
+		// continue
+	}
+	// }
+
+	// Flush data (need for refreshing data in index) after this command possible to do get.
+	client.Flush().Index(indexName).Do(ctx)
+}
+
+func GetAll(ctx context.Context) []User {
+	client, err := NewElasticClient(context.Background(), false, -1)
+	if err != nil {
+		fmt.Println("There is some problem, Please try after some time")
+	}
+	query := elasticapi.MatchAllQuery{}
+
+	searchResult, err := client.Search().
+		Index(indexName). // search in index
+		Query(query).     // specify the query
+		Do(ctx)           // execute
+	if err != nil {
+		fmt.Printf("Error during execution GetAll : %s", err.Error())
+	}
+
+	return convertSearchResultToUsers(searchResult)
+}
+
+func convertSearchResultToUsers(searchResult *elasticapi.SearchResult) []User {
+	var result []User
+	for _, hit := range searchResult.Hits.Hits {
+		var userObj User
+		err := json.Unmarshal(*hit.Source, &userObj)
+		if err != nil {
+			log.Printf("Can't deserialize 'user' object : %s", err.Error())
+			continue
+		}
+		result = append(result, userObj)
+	}
+	return result
 }

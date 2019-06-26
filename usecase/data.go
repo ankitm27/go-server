@@ -1,9 +1,11 @@
 package usecase
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"go-server/database"
+	"go-server/elasticSearch"
 	"net/http"
 )
 
@@ -66,4 +68,33 @@ func GetData(w http.ResponseWriter, r *http.Request) {
 	// w.Write([]byte(typeDataResult))
 	message, _ := json.Marshal(typeDataResult)
 	w.Write([]byte(message))
+}
+
+func CreateIndex(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("check")
+	ctx := context.Background()
+	elasticSearch.Ping(ctx, "https://29wd348tb4:ykn6pei12j@test-2867785266.ap-southeast-2.bonsaisearch.net:443")
+}
+
+func GetSearchData(w http.ResponseWriter, r *http.Request) {
+	ctx := context.Background()
+	data := elasticSearch.GetAll(ctx)
+	fmt.Println("data", data)
+	w.Write([]byte("check"))
+}
+
+func InsertData(w http.ResponseWriter, r *http.Request) {
+	ctx := context.Background()
+	// data := map[string]string{
+	// 	"check":"check",
+	// }
+	// type data struct {
+	// 	check string
+	// }
+	// var dataObj data
+	// dataObj.check = "check"
+	elasticSearch.CreateIndexIfDoesNotExist(ctx, "users_index1")
+	elasticSearch.InsertUsers(ctx)
+	// fmt.Println("data", data1)
+	w.Write([]byte("check"))
 }

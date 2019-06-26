@@ -26,10 +26,10 @@ func AuthenticateData(next http.Handler) http.Handler {
 			// if err != nil {
 			// 	fmt.Println("err", err)
 			// }
-			fmt.Println("data1111", data)
-			fmt.Println("header", r.Header)
+			// fmt.Println("data1111", data)
+			// fmt.Println("header", r.Header)
 			result := database.IsSecretValid(map[string]string{"key": data[0], "secret": secret[0]})
-			fmt.Println("result", result)
+			// fmt.Println("result", result)
 			// next.ServeHTTP(w, r)
 			if !result {
 				w.Write([]byte("Please provide correct fields"))
