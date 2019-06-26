@@ -15,8 +15,8 @@ type data struct {
 }
 
 const (
-	indexName = "users_index1"
-	docType   = "user1"
+	indexName = "users_index2"
+	docType   = "user2"
 )
 
 func CreateIndexIfDoesNotExist(ctx context.Context, indexName string) error {
@@ -137,14 +137,15 @@ func Ping(ctx context.Context, url string) error {
 // }
 
 type User struct {
-	UserID    int    `json:"id"`
-	Email     string `json:"email"`
-	FirstName string `json:"firstname"`
-	LastName  string `json:"lastname"`
-	Age       int    `json:"age"`
-	IsActive  bool   `json:"isActive"`
-	Balance   int    `json:"balance"`
-	Phone     string `json:"phone"`
+	// UserID    int    `json:"id"`
+	// Email     string `json:"email"`
+	// FirstName string `json:"firstname"`
+	// LastName  string `json:"lastname"`
+	// Age       int    `json:"age"`
+	// IsActive  bool   `json:"isActive"`
+	// Balance   int    `json:"balance"`
+	// Phone     string `json:"phone"`
+    data    map[string]string
 }
 
 // func convertSearchResultToUsers(searchResult *elasticapi.SearchResult) []data {
@@ -227,7 +228,7 @@ func DeleteUser(ctx context.Context, userID int, indexName string, docType strin
 	client.Flush().Index(indexName).Do(ctx)
 }
 
-func InsertUsers(ctx context.Context) {
+func InsertUsers(ctx context.Context,indexName string, docType string) {
 	// insert data in elasticsearch
 	client, err := NewElasticClient(context.Background(), false, -1)
 	if err != nil {
@@ -237,10 +238,11 @@ func InsertUsers(ctx context.Context) {
 	// for index := 1; index < 5; index++ {
 
 	user := User{
-		UserID:    22,
-		Email:     fmt.Sprintf("test1212%d@gmail.com", 1),
-		FirstName: fmt.Sprintf("FirstName_%d", 1),
-		LastName:  fmt.Sprintf("LastName_%d", 1),
+		// UserID:    22,
+		// Email:     fmt.Sprintf("test1212%d@gmail.com", 1),
+		// FirstName: fmt.Sprintf("FirstName_%d", 1),
+		// LastName:  fmt.Sprintf("LastName_%d", 1),
+	    data:    map[string]string{"check":"check",},
 	}
 
 	// listUsers = append(listUsers, user)
