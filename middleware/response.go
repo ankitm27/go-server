@@ -6,21 +6,28 @@ import (
 	"net/http"
 )
 
-func SendResponseMessage(message string, w http.ResponseWriter) {
-	responseObject := map[string]string{
-		"msg": message,
-	}
+func SendResponseMessage(message string, w http.ResponseWriter) (int,error){
+	// responseObject := map[string]string{
+	// 	"msg": message,
+	//     "status":true,
+	// }
+	responseObject := make(map[string]interface{})
+	responseObject["msg"] = message
+	responseObject["status"] = true
+	responseObject["statusCode"] = 200
 	responseMessage, err := json.Marshal(responseObject)
 	if err != nil {
-		fmt.Println("There is some problem, Please try after some time")
+		fmt.Println("There is some problem, Please try after some time",err)
 	}
-	w.Write(responseMessage)
+	w.Header().Set("content-type", "json/application")
+	return w.Write(responseMessage)
 }
 
-func SendResponseObject(object []byte, w http.ResponseWriter) {
+func SendResponseObject(object []byte, w http.ResponseWriter)(int,error) {
 	// responseMessage, err := json.Marshal(object)
 	// if err != nil {
 	// 	fmt.Println("There is some problem, Please try after some time")
 	// }
-	w.Write([]byte(object))
+	w.Header().Set("content-type", "json/application")
+	return w.Write([]byte(object))
 }

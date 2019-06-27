@@ -40,7 +40,8 @@ func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("data", typeData)
 	message, _ := json.Marshal(typeData)
 	// message := "check"
-	w.Write([]byte(message))
+	// w.Write([]byte(message))
+	middleware.SendResponseObject(message, w)
 }
 
 func GetData(w http.ResponseWriter, r *http.Request) {
@@ -68,11 +69,12 @@ func GetData(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("type data result", typeDataResult)
 	// w.Write([]byte(typeDataResult))
 	message, _ := json.Marshal(typeDataResult)
-	w.Write([]byte(message))
+	// w.Write([]byte(message))
+	middleware.SendResponseObject(message, w)
 }
 
 func CreateIndex(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("check")
+	// fmt.Println("check")
 	ctx := context.Background()
 	elasticSearch.Ping(ctx, "https://29wd348tb4:ykn6pei12j@test-2867785266.ap-southeast-2.bonsaisearch.net:443")
 }
@@ -86,7 +88,8 @@ func GetSearchData(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("There is some problem, Please try after some time", err)
 	}
-	w.Write([]byte(dataObj))
+	// w.Write([]byte(dataObj))
+	middleware.SendResponseObject(dataObj, w)
 }
 
 func InsertData(w http.ResponseWriter, r *http.Request) {
@@ -102,7 +105,8 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	elasticSearch.CreateIndexIfDoesNotExist(ctx, "users_index8")
 	elasticSearch.InsertUsers(ctx, "users_index8", "user8")
 	// fmt.Println("data", data1)
-	w.Write([]byte("check"))
+	// w.Write([]byte("check"))
+	middleware.SendResponseMessage("data added successfully", w)
 }
 
 func GetDemandData(w http.ResponseWriter, r *http.Request) {
@@ -111,8 +115,8 @@ func GetDemandData(w http.ResponseWriter, r *http.Request) {
 	queryData := make(map[string]string)
 	fmt.Println("query", query)
 	if !ok {
-		fmt.Println("There is some problem, Please try after some time")
-		w.Header().Set("Content-type", "application/json")
+		fmt.Println("There is some problem, Please try after some time1")
+		// w.Header().Set("Content-type", "application/json")
 		// responseObject := map[string]string{
 		// 	"msg": "Please provide all the valid fields",
 		// }

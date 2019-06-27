@@ -70,7 +70,8 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	} else {
 		message, _ = json.Marshal(user)
 	}
-	w.Write(message)
+	// w.Write(message)
+	middleware.SendResponseObject(message, w)
 }
 
 // func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
