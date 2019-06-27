@@ -15,8 +15,8 @@ type data struct {
 }
 
 const (
-	indexName = "users_index6"
-	docType   = "user6"
+	indexName = "users_index8"
+	docType   = "user8"
 )
 
 func CreateIndexIfDoesNotExist(ctx context.Context, indexName string) error {
@@ -145,7 +145,7 @@ func Ping(ctx context.Context, url string) error {
 // 	// IsActive  bool   `json:"isActive"`
 // 	// Balance   int    `json:"balance"`
 // 	// Phone     string `json:"phone"`
-// 	data         string  `json:"data"` 
+// 	data         string  `json:"data"`
 // }
 
 // func convertSearchResultToUsers(searchResult *elasticapi.SearchResult) []data {
@@ -302,35 +302,41 @@ type User struct {
 	// IsActive  bool   `json:"isActive"`
 	// Balance   int    `json:"balance"`
 	// Phone     string `json:"phone"`
-    Data      string `json:data`
+	Data      string `json:data`
+	APIURL    string `json:apiUrl`
+	APIKey    string `json:apiKey`
+	APISecret string `json:apiSecret`
 }
 
-func InsertUsers(ctx context.Context,indexName string,docType string) {
+func InsertUsers(ctx context.Context, indexName string, docType string) {
 	// insert data in elasticsearch
-	client,err := NewElasticClient(context.Background(),false,-1)
-	if(err != nil){
-		fmt.Println("There is some problem, Please try after some time",err)
+	client, err := NewElasticClient(context.Background(), false, -1)
+	if err != nil {
+		fmt.Println("There is some problem, Please try after some time", err)
 	}
 	// var listUsers []User
 	// for index := 1; index < 5; index++ {
 
-		user := User{
-			// UserID:    122123,
-			// Email:     fmt.Sprintf("test%d@gmail.com", 1222112),
-			// FirstName: fmt.Sprintf("FirstName_%d", 12121231),
-			// LastName:  fmt.Sprintf("LastName_%d", 112112),
-		    Data:       "check",
-		}
+	user := User{
+		// UserID:    122123,
+		// Email:     fmt.Sprintf("test%d@gmail.com", 1222112),
+		// FirstName: fmt.Sprintf("FirstName_%d", 12121231),
+		// LastName:  fmt.Sprintf("LastName_%d", 112112),
+		Data:      `{"check":"check"}`,
+		APIURL:    `/searcj1334`,
+		APIKey:    `io5i6o5uo6p5op`,
+		APISecret: `584906854908`,
+	}
 
-		// listUsers = append(listUsers, user)
+	// listUsers = append(listUsers, user)
 	// }
-       fmt.Println("user",user) 
+	fmt.Println("user", user)
 	// for _, userObj := range listUsers {
-		_, err = client.Index().Index(indexName).Type(docType).BodyJson(user).Do(ctx)
-		if err != nil {
-			fmt.Printf("UserId=%d was nos created. Error : %s \n",  err.Error())
-			// continue
-		}
+	_, err = client.Index().Index(indexName).Type(docType).BodyJson(user).Do(ctx)
+	if err != nil {
+		fmt.Printf("UserId=%d was nos created. Error : %s \n", err.Error())
+		// continue
+	}
 	// }
 
 	// Flush data (need for refreshing data in index) after this command possible to do get.
@@ -338,8 +344,8 @@ func InsertUsers(ctx context.Context,indexName string,docType string) {
 }
 
 func GetAll(ctx context.Context) []User {
-	client,err := NewElasticClient(context.Background(),false,-1)
-	if(err != nil){
+	client, err := NewElasticClient(context.Background(), false, -1)
+	if err != nil {
 		fmt.Println("There is some problem, Please try after some time")
 	}
 	query := elasticapi.MatchAllQuery{}
@@ -349,7 +355,7 @@ func GetAll(ctx context.Context) []User {
 		Query(query).     // specify the query
 		Do(ctx)           // execute
 	if err != nil {
-		fmt.Printf("Error during execution GetAll : %s", err.Error())
+		fmt.Printf("Error during execution GetAll : %s", err)
 	}
 
 	return convertSearchResultToUsers(searchResult)
@@ -367,4 +373,27 @@ func convertSearchResultToUsers(searchResult *elasticapi.SearchResult) []User {
 		result = append(result, userObj)
 	}
 	return result
+}
+
+func GetAllSearchData(ctx context.Context,queryData map[string]string) []User {
+	// query := elasticapi.MatchAllQuery{}
+	client, err := NewElasticClient(context.Background(), false, -1)
+	if err != nil {
+		fmt.Println("There is some problem, Please try after some time", err)
+	}
+	query := elasticapi.NewBoolQuery()
+	musts := []elasticapi.Query{elasticapi.NewTermQuery("APIURL",queryData["APIURL"])}
+	// fmt.Println("musts",string(musts))
+	query = query.Must(musts...)
+	fmt.Println("query", query)
+
+	searchResult, err := client.Search().
+		Index(indexName). // search in index
+		Query(query).     // specify the query
+		Do(ctx)           // execute
+	if err != nil {
+		fmt.Printf("Error during execution GetAll : %s", err.Error())
+	}
+
+	return convertSearchResultToUsers(searchResult)
 }

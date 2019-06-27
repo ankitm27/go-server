@@ -19,4 +19,5 @@ func DataDelivery(mux *mux.Router) {
 	mux.Handle("/createindex", http.HandlerFunc(useCase.CreateIndex))
 	mux.Handle("/getsearchdata", middleware.AuthenticateData(http.HandlerFunc(useCase.GetSearchData)))
     mux.Handle("/insertdata",middleware.AuthenticateData(http.HandlerFunc(useCase.InsertData)))
+	mux.Handle("/getdemanddata",middleware.AuthenticateData(http.HandlerFunc(useCase.GetDemandData)))
 }

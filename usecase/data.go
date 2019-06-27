@@ -79,8 +79,13 @@ func CreateIndex(w http.ResponseWriter, r *http.Request) {
 func GetSearchData(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	data := elasticSearch.GetAll(ctx)
-	fmt.Println("data", data)
-	w.Write([]byte("check"))
+	fmt.Println("data111", data)
+	// w.Write([]byte("check"))
+	dataObj, err := json.Marshal(data)
+	if err != nil {
+		fmt.Println("There is some problem, Please try after some time", err)
+	}
+	w.Write([]byte(dataObj))
 }
 
 func InsertData(w http.ResponseWriter, r *http.Request) {
@@ -93,8 +98,29 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	// }
 	// var dataObj data
 	// dataObj.check = "check"
-	elasticSearch.CreateIndexIfDoesNotExist(ctx, "users_index6")
-	elasticSearch.InsertUsers(ctx,"users_index6","user6")
+	elasticSearch.CreateIndexIfDoesNotExist(ctx, "users_index8")
+	elasticSearch.InsertUsers(ctx, "users_index8", "user8")
 	// fmt.Println("data", data1)
 	w.Write([]byte("check"))
+}
+
+func GetDemandData(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
+	value, ok := query["APIURL"]
+	queryData := make(map[string]string)
+	fmt.Println("query", query)
+	if !ok {
+		fmt.Println("There is some problem, Please try after some time")
+	} else {
+		queryData["APIURL"] = query["APIURL"][0]
+		ctx := context.Background()
+		data := elasticSearch.GetAllSearchData(ctx, queryData)
+		fmt.Println("data", data)
+		fmt.Println("value", value)
+		dataObj, err := json.Marshal(data)
+		if err != nil {
+			fmt.Println("There is some problem, Please try after some time", err)
+		}
+		w.Write([]byte(dataObj))
+	}
 }
