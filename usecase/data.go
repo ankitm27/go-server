@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"go-server/database"
 	"go-server/elasticSearch"
+	"go-server/middleware"
 	"net/http"
 )
 
@@ -111,16 +112,27 @@ func GetDemandData(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("query", query)
 	if !ok {
 		fmt.Println("There is some problem, Please try after some time")
+		w.Header().Set("Content-type", "application/json")
+		// responseObject := map[string]string{
+		// 	"msg": "Please provide all the valid fields",
+		// }
+		// responseMessage, err := json.Marshal(responseObject)
+		// if err != nil {
+		// 	fmt.Println("There is some problem, Please try after some time")
+		// }
+		// w.Write(responseMessage)
+		middleware.SendResponseMessage("Please provide all the valid fields", w)
 	} else {
 		queryData["APIURL"] = query["APIURL"][0]
 		ctx := context.Background()
 		data := elasticSearch.GetAllSearchData(ctx, queryData)
 		fmt.Println("data", data)
 		fmt.Println("value", value)
-		dataObj, err := json.Marshal(data)
-		if err != nil {
-			fmt.Println("There is some problem, Please try after some time", err)
-		}
-		w.Write([]byte(dataObj))
+		dataObj, _ := json.Marshal(data)
+		// if err != nil {
+		// 	fmt.Println("There is some problem, Please try after some time", err)
+		// }
+		// w.Write([]byte(dataObj))
+		middleware.SendResponseObject(dataObj, w)
 	}
 }
