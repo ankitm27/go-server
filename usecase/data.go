@@ -93,8 +93,8 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 	// }
 	// var dataObj data
 	// dataObj.check = "check"
-	elasticSearch.CreateIndexIfDoesNotExist(ctx, "users_index2")
-	elasticSearch.InsertUsers(ctx,"users_index2","user2")
+	elasticSearch.CreateIndexIfDoesNotExist(ctx, "users_index6")
+	elasticSearch.InsertUsers(ctx,"users_index6","user6")
 	// fmt.Println("data", data1)
 	w.Write([]byte("check"))
 }
