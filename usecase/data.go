@@ -132,11 +132,11 @@ func GetDemandData(w http.ResponseWriter, r *http.Request) {
 		data := elasticSearch.GetAllSearchData(ctx, queryData)
 		fmt.Println("data", data)
 		fmt.Println("value", value)
-		dataObj, _ := json.Marshal(data)
+		// dataObj, _ := json.Marshal(data)
 		// if err != nil {
 		// 	fmt.Println("There is some problem, Please try after some time", err)
 		// }
 		// w.Write([]byte(dataObj))
-		middleware.SendResponseObject(dataObj, w)
+		middleware.SendResponseObject(data, w)
 	}
 }
