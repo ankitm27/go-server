@@ -3,14 +3,12 @@ package elasticSearch
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"go-server/utility"
 	"io/ioutil"
 	"net/http"
 	"time"
 
 	loghttp "github.com/motemen/go-loghttp"
-	"github.com/motemen/go-nuts/roundtime"
 
 	// "github.com/motemen/go-nuts/roundtime"
 	"gopkg.in/olivere/elastic.v5"
@@ -26,7 +24,7 @@ func NewElasticClient(ctx context.Context, sniff bool, responseSize int) (*elast
 	} else {
 		config := utility.GetConfig()
 		url := config.ElasticSearchUrl
-		fmt.Println("check1212")
+		// fmt.Println("check1212")
 		var httpClient = &http.Client{
 			Transport: &loghttp.Transport{
 				LogRequest: func(req *http.Request) {
@@ -43,9 +41,9 @@ func NewElasticClient(ctx context.Context, sniff bool, responseSize int) (*elast
 				},
 				LogResponse: func(resp *http.Response) {
 					ctx := resp.Request.Context()
-					if start, ok := ctx.Value(loghttp.ContextKeyRequestStart).(time.Time); ok {
+					if _, ok := ctx.Value(loghttp.ContextKeyRequestStart).(time.Time); ok {
 						// fmt.Println("Response Status : ", resp.StatusCode)
-						fmt.Println("Response Duration : ", roundtime.Duration(time.Now().Sub(start), 2))
+						// fmt.Println("Response Duration : ", roundtime.Duration(time.Now().Sub(start), 2))
 					} else {
 						// fmt.Println("Response Status : ", resp.StatusCode)
 					}

@@ -15,8 +15,8 @@ func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("data", data)
 	userId := data["userId"][0]
 	typeDataStr := ""
-	value, ok := data["type"]
-	fmt.Println("value", value)
+	_, ok := data["type"]
+	// fmt.Println("value", value)
 	if ok && data["type"][0] != "" {
 		typeDataStr = data["type"][0]
 	}
@@ -31,13 +31,13 @@ func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
 		project[typeDataStr] = 1
 	}
 	query := make(map[string]string)
-	value, ok = data["userId"]
-	fmt.Println("value", value)
+	_, ok = data["userId"]
+	// fmt.Println("value", value)
 	if ok && data["userId"][0] != "" {
 		query["userid"] = userId
 	}
 	typeData := database.GetData(query, project)
-	fmt.Println("data", typeData)
+	// fmt.Println("data", typeData)
 	message, _ := json.Marshal(typeData)
 	// message := "check"
 	// w.Write([]byte(message))
@@ -63,10 +63,10 @@ func GetData(w http.ResponseWriter, r *http.Request) {
 	if ok && data["reqId"][0] != "" {
 		query["reqid"] = data["reqId"][0]
 	}
-	fmt.Println("query1111", query)
-	fmt.Println("value", value)
+	// fmt.Println("query1111", query)
+	// fmt.Println("value", value)
 	typeDataResult := database.GetUserData(query)
-	fmt.Println("type data result", typeDataResult)
+	// fmt.Println("type data result", typeDataResult)
 	// w.Write([]byte(typeDataResult))
 	message, _ := json.Marshal(typeDataResult)
 	// w.Write([]byte(message))
@@ -82,7 +82,7 @@ func CreateIndex(w http.ResponseWriter, r *http.Request) {
 func GetSearchData(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 	data := elasticSearch.GetAll(ctx)
-	fmt.Println("data111", data)
+	// fmt.Println("data111", data)
 	// w.Write([]byte("check"))
 	dataObj, err := json.Marshal(data)
 	if err != nil {
@@ -113,7 +113,7 @@ func GetDemandData(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
 	value, ok := query["APIURL"]
 	queryData := make(map[string]string)
-	fmt.Println("query", query)
+	// fmt.Println("query", query)
 	if !ok {
 		fmt.Println("There is some problem, Please try after some time1")
 		// w.Header().Set("Content-type", "application/json")
@@ -130,8 +130,8 @@ func GetDemandData(w http.ResponseWriter, r *http.Request) {
 		queryData["APIURL"] = query["APIURL"][0]
 		ctx := context.Background()
 		data := elasticSearch.GetAllSearchData(ctx, queryData)
-		fmt.Println("data", data)
-		fmt.Println("value", value)
+		// fmt.Println("data", data)
+		// fmt.Println("value", value)
 		// dataObj, _ := json.Marshal(data)
 		// if err != nil {
 		// 	fmt.Println("There is some problem, Please try after some time", err)

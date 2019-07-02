@@ -59,7 +59,7 @@ func CreateUser(data map[string]string) (interface{}, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Println("result", result)
+	// fmt.Println("result", result)
 	return result.InsertedID, nil
 }
 

@@ -46,7 +46,7 @@ func CreateIndexIfDoesNotExist(ctx context.Context, indexName string) error {
 	if !res.Acknowledged {
 		return errors.New("CreateIndex was not acknowledged. Check that timeout value is correct.")
 	}
-	fmt.Println("res", res)
+	// fmt.Println("res", res)
 
 	return nil
 }
@@ -375,14 +375,14 @@ func convertSearchResultToUsers(searchResult *elasticapi.SearchResult) []User {
 	return result
 }
 
-func GetAllSearchData(ctx context.Context,queryData map[string]string) []User {
+func GetAllSearchData(ctx context.Context, queryData map[string]string) []User {
 	// query := elasticapi.MatchAllQuery{}
 	client, err := NewElasticClient(context.Background(), false, -1)
 	if err != nil {
 		fmt.Println("There is some problem, Please try after some time", err)
 	}
 	query := elasticapi.NewBoolQuery()
-	musts := []elasticapi.Query{elasticapi.NewTermQuery("APIURL",queryData["APIURL"])}
+	musts := []elasticapi.Query{elasticapi.NewTermQuery("APIURL", queryData["APIURL"])}
 	// fmt.Println("musts",string(musts))
 	query = query.Must(musts...)
 	fmt.Println("query", query)

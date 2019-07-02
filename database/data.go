@@ -18,6 +18,6 @@ func GetUserData(typeData map[string]string) *Data {
 		var data *Data
 		return data
 	}
-	fmt.Println("result", result)
+	// fmt.Println("result", result)
 	return result
 }

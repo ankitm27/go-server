@@ -12,10 +12,10 @@ func AuthenticateData(next http.Handler) http.Handler {
 		// if(!r.Header["Authorization"] || !r.Header["Secret"]){
 		// 	w.Write([]byte("Please provide valid fields"))
 		// }
-		value, ok := r.Header["Authorization"]
-		value1, ok1 := r.Header["Secret"]
-		fmt.Println("value", value)
-		fmt.Println("value1", value1)
+		_, ok := r.Header["Authorization"]
+		_, ok1 := r.Header["Secret"]
+		// fmt.Println("value", value)
+		// fmt.Println("value1", value1)
 		if !ok || !ok1 {
 			w.Write([]byte("Please provide all the valid fields"))
 		} else {

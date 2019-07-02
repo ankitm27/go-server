@@ -31,7 +31,7 @@ func GetData(userId map[string]string, project map[string]int) *DataType {
 	// result1, err := collection.InsertOne(ctx, data)
 	// fmt.Println("result", result1)
 	err := collection.FindOne(ctx, interface{}(userId), options.FindOne().SetProjection(interface{}(project))).Decode(result)
-	fmt.Println("result", result)
+	// fmt.Println("result", result)
 	if err != nil {
 		fmt.Println("There is some problem in fetching the data", err)
 	}
