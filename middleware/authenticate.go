@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"go-server/database"
 	"net/http"
 )
@@ -22,7 +21,7 @@ func AuthenticateData(next http.Handler) http.Handler {
 
 			data := r.Header["Authorization"]
 			secret := r.Header["Secret"]
-			fmt.Println("secret", secret)
+			// fmt.Println("secret", secret)
 			// if err != nil {
 			// 	fmt.Println("err", err)
 			// }

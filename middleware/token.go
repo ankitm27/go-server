@@ -27,8 +27,8 @@ func ValidateToken(tokenStr string) {
 		}
 		return []byte("secret"), nil
 	})
-	fmt.Println("token111", token)
-	if claims1, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+	// fmt.Println("token111", token)
+	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		// type User struct {
 		// username string
 		// password string
@@ -36,9 +36,9 @@ func ValidateToken(tokenStr string) {
 		// var user User
 		// data := mapstructure.Decode(claims, &user)
 		// json.NewEncoder(w).Encode(user)
-		fmt.Println("claims", claims1)
-		fmt.Println("claims", claims1["username"])
-		fmt.Println("claims 1212", claims1["password"])
+		// fmt.Println("claims", claims1)
+		// fmt.Println("claims", claims1["username"])
+		// fmt.Println("claims 1212", claims1["password"])
 	} else {
 		// json.NewEncoder(w).Encode(Exception{Message: "Invalid authorization token"})
 	}

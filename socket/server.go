@@ -8,7 +8,6 @@ import (
 	"io"
 	"log"
 	"net"
-	"reflect"
 	"strings"
 )
 
@@ -46,15 +45,15 @@ ILOOP:
 		case io.EOF:
 			break ILOOP
 		case nil:
-			log.Println("Receive:", data)
+			// log.Println("Receive:", data)
 			// redis.AddDataIntoRedis(data)
 			isEOF := isTransportOver(data)
-			fmt.Println("is Eof", isEOF)
+			// fmt.Println("is Eof", isEOF)
 			if isEOF {
 				data = strings.Replace(data, "\r\n\r\n", "", 1)
 			}
-			fmt.Println("data1111", data)
-			fmt.Println("reflect", reflect.TypeOf(data))
+			// fmt.Println("data1111", data)
+			// fmt.Println("reflect", reflect.TypeOf(data))
 			// var x interface{} = data
 			// fmt.Println("x", x)
 			// fmt.Println("reflect", reflect.TypeOf(x))
@@ -89,11 +88,11 @@ ILOOP:
 				fmt.Println("There is some problem, Please try after some time1", err)
 			}
 			// fmt.Println("bytes", string(bytes))
-			fmt.Println("p", p)
-			fmt.Println("data")
-			fmt.Println("data", p.Data)
-			fmt.Println("data", p.Key)
-			fmt.Println("data1111", p.Secret)
+			// fmt.Println("p", p)
+			// fmt.Println("data")
+			// fmt.Println("data", p.Data)
+			// fmt.Println("data", p.Key)
+			// fmt.Println("data1111", p.Secret)
 			redis.AddDataIntoRedis(data)
 			if isEOF {
 				break ILOOP

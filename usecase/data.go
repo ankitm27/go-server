@@ -46,20 +46,20 @@ func GetDataTypeWise(w http.ResponseWriter, r *http.Request) {
 
 func GetData(w http.ResponseWriter, r *http.Request) {
 	data := r.URL.Query()
-	fmt.Println("data", data)
+	// fmt.Println("data", data)
 	// typeData := data["type"][0]
 	query := make(map[string]string)
-	value, ok := data["type"]
+	_, ok := data["type"]
 	// fmt.Println("value1111", value)
 	// typeData := data["type"][0]
 	if ok && data["type"][0] != "" {
 		query["datatype"] = data["type"][0]
 	}
-	value, ok = data["ip"]
+	_, ok = data["ip"]
 	if ok && data["ip"][0] != "" {
 		query["ip"] = data["ip"][0]
 	}
-	value, ok = data["reqId"]
+	_, ok = data["reqId"]
 	if ok && data["reqId"][0] != "" {
 		query["reqid"] = data["reqId"][0]
 	}
@@ -111,7 +111,7 @@ func InsertData(w http.ResponseWriter, r *http.Request) {
 
 func GetDemandData(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query()
-	value, ok := query["APIURL"]
+	_, ok := query["APIURL"]
 	queryData := make(map[string]string)
 	// fmt.Println("query", query)
 	if !ok {
